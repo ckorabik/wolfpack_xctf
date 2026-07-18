@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Saint Ignatius cross country Peoria all-time lists." />
+    <title>Wolfpack XC | Records</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20260718f" />
+    <script src="records.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a>
+      <nav aria-label="Main navigation">
+        <a href="index.html">Home</a><a href="mileage.html">Mileage</a><a href="attendance.html">Attendance</a><a class="active" aria-current="page" href="records.html">Records</a><a href="history.html">History</a><a href="roster.html">Roster</a><a href="pace-groups.html">Pace Groups</a><a href="workout-blog.html">Workout Blog</a><a href="supplemental-workouts.html">Supplemental</a>
+      </nav>
+    </header>
+
+    <main class="records-page">
+      <section class="page-hero records-hero">
+        <p class="eyebrow">Detweiller Park · Peoria</p>
+        <h1>Top Times</h1>
+        <p>The fastest Wolfpack performances on Illinois cross country's most historic course.</p>
+      </section>
+
+      <section class="records-section">
+        <div class="records-heading">
+          <div><p class="eyebrow">All-time lists</p><h2>Peoria Top 50</h2></div>
+          <div class="records-key"><span>* State Meet</span><span>( ) All-State place</span></div>
+        </div>
+
+        <div class="records-tabs" role="tablist" aria-label="Peoria record categories">
+          <button id="varsity-tab" class="active" type="button" role="tab" aria-selected="true" aria-controls="varsity-panel" data-record-tab="varsity"><span>01</span>Varsity <b id="varsity-count">—</b></button>
+          <button id="sophomores-tab" type="button" role="tab" aria-selected="false" aria-controls="sophomores-panel" data-record-tab="sophomores"><span>02</span>Sophomores <b id="sophomores-count">—</b></button>
+          <button id="freshmen-tab" type="button" role="tab" aria-selected="false" aria-controls="freshmen-panel" data-record-tab="freshmen"><span>03</span>Freshmen <b id="freshmen-count">—</b></button>
+        </div>
+
+        <div id="records-status" class="records-status success-state" role="status">Static snapshot from the Peoria Top 50 Google Sheet</div>
+
+        <section id="varsity-panel" class="records-panel active" role="tabpanel" aria-labelledby="varsity-tab">
+          <div class="records-table-wrap"><table><thead><tr><th scope="col">Rank</th><th scope="col">Athlete</th><th scope="col">Time</th><th scope="col">Year</th></tr></thead><tbody id="varsity-records"></tbody></table></div>
+        </section>
+        <section id="sophomores-panel" class="records-panel" role="tabpanel" aria-labelledby="sophomores-tab" hidden>
+          <div class="records-table-wrap"><table><thead><tr><th scope="col">Rank</th><th scope="col">Athlete</th><th scope="col">Time</th><th scope="col">Year</th></tr></thead><tbody id="sophomores-records"></tbody></table></div>
+        </section>
+        <section id="freshmen-panel" class="records-panel" role="tabpanel" aria-labelledby="freshmen-tab" hidden>
+          <div class="records-table-wrap"><table><thead><tr><th scope="col">Rank</th><th scope="col">Athlete</th><th scope="col">Time</th><th scope="col">Year</th></tr></thead><tbody id="freshmen-records"></tbody></table></div>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>

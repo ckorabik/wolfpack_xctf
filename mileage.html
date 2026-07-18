@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Log weekly mileage for Wolfpack Cross Country." />
+    <title>Wolfpack XC | Mileage</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20260718b" />
+    <script src="config.js"></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a>
+      <nav aria-label="Main navigation">
+        <a href="index.html">Home</a><a class="active" aria-current="page" href="mileage.html">Mileage</a><a href="attendance.html">Attendance</a><a href="records.html">Records</a><a href="history.html">History</a><a href="roster.html">Roster</a><a href="pace-groups.html">Pace Groups</a><a href="workout-blog.html">Workout Blog</a><a href="supplemental-workouts.html">Supplemental</a>
+      </nav>
+    </header>
+    <main class="mileage-shell">
+      <section class="mileage-intro" aria-labelledby="page-title">
+        <div class="intro-copy"><p class="eyebrow">Weekly check-in</p><h1 id="page-title">Miles add up.<br />So do we.</h1><p class="lede">Log your week, share how training felt, and help the team keep moving forward together.</p></div>
+        <blockquote>“Success is the sum of small efforts, repeated day in and day out.”</blockquote>
+      </section>
+      <section class="form-panel" aria-labelledby="form-title">
+        <div class="form-heading"><p class="eyebrow">Training log</p><h2 id="form-title">Submit your week</h2><p>Entries go directly to the team's private Google Sheet.</p></div>
+        <form id="mileage-form" novalidate>
+          <div class="field"><label for="athlete-name">Athlete name</label><input id="athlete-name" name="athleteName" type="text" autocomplete="name" placeholder="First and last name" maxlength="80" required /><span class="error" data-error-for="athleteName"></span></div>
+          <div class="field-row">
+            <div class="field"><label for="week-ending">Week ending</label><input id="week-ending" name="weekEnding" type="date" required /><span class="error" data-error-for="weekEnding"></span></div>
+            <div class="field"><label for="weekly-miles">Total miles</label><div class="input-suffix"><input id="weekly-miles" name="weeklyMiles" type="number" inputmode="decimal" min="0" max="200" step="0.01" placeholder="0.00" required /><span>mi</span></div><span class="error" data-error-for="weeklyMiles"></span></div>
+          </div>
+          <div class="field"><label for="training-feel">How did training feel?</label><select id="training-feel" name="trainingFeel" required><option value="">Choose one</option><option value="Great">Great — strong and energized</option><option value="Good">Good — mostly comfortable</option><option value="Okay">Okay — some tough days</option><option value="Hard">Hard — struggled this week</option><option value="Injured">Injured / unable to train</option></select><span class="error" data-error-for="trainingFeel"></span></div>
+          <div class="field"><div class="label-line"><label for="notes">Notes for coaches</label><span>Optional</span></div><textarea id="notes" name="notes" rows="4" maxlength="500" placeholder="Share a highlight, concern, injury, or anything else we should know."></textarea></div>
+          <div id="form-status" class="status" role="status" aria-live="polite"></div>
+          <button id="submit-button" type="submit"><span>Submit weekly mileage</span><span aria-hidden="true">→</span></button>
+          <p class="privacy-note">Your submission is visible only to the Wolfpack coaching staff.</p>
+        </form>
+        <section id="success-card" class="success-card" hidden><div class="success-icon" aria-hidden="true">✓</div><p class="eyebrow">You're all set</p><h2>Week logged.</h2><p>Your mileage has been added to the team sheet. Keep stacking days.</p><button id="submit-another" class="secondary-button" type="button">Submit another entry</button></section>
+      </section>
+    </main>
+  </body>
+</html>
