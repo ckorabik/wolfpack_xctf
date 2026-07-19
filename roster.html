@@ -1,3 +1,33 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Wolfpack XC | Roster</title><link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet"><link rel="stylesheet" href="styles.css"></head><body>
-<header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a><nav><a href="index.html">Home</a><a href="mileage.html">Mileage</a><a href="attendance.html">Attendance</a><a href="records.html">Records</a><a href="history.html">History</a><a class="active" href="roster.html">Roster</a><a href="pace-groups.html">Pace Groups</a><a href="workout-blog.html">Workout Blog</a><a href="supplemental-workouts.html">Supplemental</a></nav></header>
-<main class="section-page"><section class="page-hero"><p class="eyebrow">Meet the pack</p><h1>Roster</h1><p>One team, many roles, one shared direction.</p></section><section class="coming-soon"><span>03</span><h2>2026 roster coming soon</h2><p>Athletes and coaches will be organized here by class and role.</p></section></main></body></html>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Wolfpack XC team roster." />
+    <title>Wolfpack XC | Roster</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20260719b" />
+    <script src="roster.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a>
+      <nav aria-label="Main navigation">
+        <a href="index.html">Home</a><a href="mileage.html">Mileage</a><a href="coach-tools.html">Coach Tools</a><a href="records.html">Records</a><a href="history.html">History</a><a class="active" aria-current="page" href="roster.html">Roster</a><a href="pace-groups.html">Pace Groups</a><a href="workout-blog.html">Workouts</a><a href="supplemental-workouts.html">Supplemental</a>
+      </nav>
+    </header>
+    <main class="roster-page">
+      <section class="page-hero roster-hero"><p class="eyebrow">Meet the pack</p><h1>Team Roster</h1><p>Training groups, grade levels, and uniform assignments for the current Wolfpack team.</p></section>
+      <section class="roster-section">
+        <div class="roster-heading">
+          <div><p class="eyebrow">Current team</p><h2>2026 Roster</h2></div>
+          <div class="roster-summary"><strong id="athlete-count">—</strong><span>Athletes</span><strong id="coach-count">—</strong><span>Coaches</span></div>
+        </div>
+        <div id="roster-groups" class="roster-groups"></div>
+        <p class="roster-note">Athlete last names are abbreviated for privacy. Uniform assignments display when available.</p>
+      </section>
+    </main>
+  </body>
+</html>

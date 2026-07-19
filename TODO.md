@@ -8,3 +8,11 @@
   - Generate reviewed static site data rather than loading Google Sheets in each visitor's browser.
   - Give the coach a single protected action to preview changes and publish all approved updates together.
   - Preserve year-based timeline image mappings during every sync.
+
+## Coach tools
+
+- [ ] Connect the Workout Log to the public Workouts page.
+  - Save coach-created workout entries in a protected data source.
+  - Provide draft, preview, publish, edit, and archive states.
+  - Publish only coach-approved fields to the public page.
+  - Add authentication before enabling writes or storing team information.

@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wolfpack XC | Workout Log</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20260719a" />
+  </head>
+  <body>
+    <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a><nav aria-label="Main navigation"><a href="index.html">Home</a><a href="mileage.html">Mileage</a><a class="active" aria-current="page" href="coach-tools.html">Coach Tools</a><a href="records.html">Records</a><a href="history.html">History</a><a href="roster.html">Roster</a><a href="pace-groups.html">Pace Groups</a><a href="workout-blog.html">Workouts</a><a href="supplemental-workouts.html">Supplemental</a></nav></header>
+    <main class="tool-form-page">
+      <section class="tool-form-intro"><a href="coach-tools.html">← Back to Coach Tools</a><p class="eyebrow">Training publisher</p><h1>Workout Log</h1><p>Build a structured team workout for publication on the Workouts page.</p><div class="tool-notice"><strong>Publishing connection planned</strong><span>The form layout is ready. Saving and publishing will be connected to the coach bulk-sync workflow.</span></div></section>
+      <section class="tool-form-panel">
+        <form id="workout-log-form">
+          <div class="field-row"><div class="field"><label for="workout-date">Workout date</label><input id="workout-date" type="date" /></div><div class="field"><label for="workout-type">Session type</label><select id="workout-type"><option>Easy run</option><option>Long run</option><option>Tempo / threshold</option><option>Intervals</option><option>Race</option><option>Recovery</option></select></div></div>
+          <div class="field"><label for="workout-title">Workout title</label><input id="workout-title" type="text" placeholder="Threshold repeats at the lakefront" /></div>
+          <div class="field"><label for="workout-purpose">Purpose</label><textarea id="workout-purpose" rows="3" placeholder="What adaptation or skill is this session targeting?"></textarea></div>
+          <div class="field"><label for="workout-details">Workout details</label><textarea id="workout-details" rows="7" placeholder="Warm-up, main set, recovery, cool-down, and total volume."></textarea></div>
+          <div class="field"><label for="workout-groups">Pace groups / modifications</label><textarea id="workout-groups" rows="4" placeholder="List group-specific volume, pace, or recovery adjustments."></textarea></div>
+          <div class="field"><label for="workout-notes">Coach notes</label><textarea id="workout-notes" rows="4" placeholder="Execution cues, route notes, weather adjustments, or reminders."></textarea></div>
+          <button type="button" disabled><span>Publish to Workouts</span><span>Coming soon</span></button>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>

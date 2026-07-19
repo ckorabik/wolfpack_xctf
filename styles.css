@@ -1225,6 +1225,372 @@ footer span:first-child {
   background: #f4eadb;
 }
 
+.coach-tools-page {
+  min-height: calc(100vh - 70px);
+}
+
+.coach-tools-hero {
+  padding-bottom: clamp(6rem, 11vw, 10rem);
+}
+
+.tool-section {
+  width: min(1120px, 92vw);
+  margin: -4rem auto 5rem;
+  padding: clamp(1.5rem, 4vw, 3.5rem);
+  border-top: 5px solid var(--red);
+  background: white;
+  box-shadow: 0 24px 70px rgb(0 0 0 / 10%);
+}
+
+.tool-section-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.tool-section-heading h2 {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.tool-section-heading > p {
+  max-width: 430px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.tool-card-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  border-top: 1px solid var(--line);
+  border-left: 1px solid var(--line);
+}
+
+.tool-card {
+  position: relative;
+  display: flex;
+  min-height: 330px;
+  flex-direction: column;
+  padding: 2rem;
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.tool-card:hover {
+  z-index: 1;
+  transform: translateY(-4px);
+  box-shadow: 0 18px 45px rgb(0 0 0 / 12%);
+}
+
+.tool-card.featured-tool {
+  background: var(--navy);
+  color: white;
+}
+
+.tool-number {
+  color: var(--red-dark);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+}
+
+.featured-tool .tool-number {
+  color: var(--red);
+}
+
+.tool-icon {
+  display: grid;
+  width: 3.2rem;
+  height: 3.2rem;
+  margin: 2.6rem 0 1rem;
+  place-items: center;
+  border-radius: 50%;
+  background: #eee9eb;
+  color: var(--navy);
+  font-family: "Oswald", sans-serif;
+  font-size: 1.2rem;
+}
+
+.featured-tool .tool-icon {
+  background: var(--red);
+}
+
+.tool-card h3 {
+  margin: 0;
+  font-family: "Oswald", sans-serif;
+  font-size: 1.75rem;
+  text-transform: uppercase;
+}
+
+.tool-card p {
+  margin: 0.75rem 0 2rem;
+  color: var(--muted);
+  font-size: 0.86rem;
+  line-height: 1.65;
+}
+
+.featured-tool p {
+  color: rgb(255 255 255 / 65%);
+}
+
+.tool-card b {
+  display: flex;
+  justify-content: space-between;
+  margin-top: auto;
+  color: var(--navy);
+  font-size: 0.78rem;
+}
+
+.featured-tool b {
+  color: var(--red);
+}
+
+.tool-form-page {
+  display: grid;
+  min-height: calc(100vh - 70px);
+  grid-template-columns: minmax(300px, 0.75fr) minmax(500px, 1.25fr);
+}
+
+.tool-form-intro {
+  padding: clamp(3rem, 6vw, 6rem);
+  color: white;
+  background:
+    radial-gradient(circle at 80% 15%, rgb(215 174 85 / 25%), transparent 25%),
+    var(--navy);
+}
+
+.tool-form-intro > a {
+  display: inline-block;
+  margin-bottom: clamp(4rem, 10vh, 8rem);
+  color: rgb(255 255 255 / 65%);
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.tool-form-intro h1 {
+  font-size: clamp(3.5rem, 7vw, 6.5rem);
+}
+
+.tool-form-intro > p:last-of-type {
+  max-width: 520px;
+  color: rgb(255 255 255 / 65%);
+  line-height: 1.7;
+}
+
+.tool-form-panel {
+  display: grid;
+  place-items: center;
+  padding: clamp(2rem, 6vw, 6rem);
+  background: #f3f3f1;
+}
+
+.tool-form-panel form {
+  width: min(100%, 680px);
+}
+
+.tool-form-panel button {
+  display: flex;
+  min-height: 3.5rem;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 1.25rem;
+  border: 0;
+  border-radius: 3px;
+  background: var(--navy);
+  color: white;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.tool-form-panel button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.tool-form-panel button:disabled span:last-child {
+  font-size: 0.68rem;
+  font-weight: 500;
+  text-transform: uppercase;
+}
+
+.tool-notice {
+  display: grid;
+  gap: 0.35rem;
+  margin-top: 2rem;
+  padding: 1rem;
+  border-left: 3px solid var(--red);
+  background: rgb(255 255 255 / 8%);
+}
+
+.tool-notice strong {
+  color: var(--red);
+  font-size: 0.76rem;
+  text-transform: uppercase;
+}
+
+.tool-notice span {
+  color: rgb(255 255 255 / 62%);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.roster-page {
+  min-height: calc(100vh - 70px);
+}
+
+.roster-hero {
+  padding-bottom: clamp(6rem, 11vw, 10rem);
+}
+
+.roster-section {
+  width: min(1120px, 94vw);
+  margin: -4rem auto 5rem;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  border-top: 5px solid var(--red);
+  background: white;
+  box-shadow: 0 24px 70px rgb(0 0 0 / 10%);
+}
+
+.roster-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2.5rem;
+}
+
+.roster-heading h2 {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+.roster-summary {
+  display: grid;
+  grid-template-columns: auto auto;
+  align-items: baseline;
+  gap: 0.15rem 0.65rem;
+}
+
+.roster-summary strong {
+  color: var(--navy);
+  font-family: "Oswald", sans-serif;
+  font-size: 1.6rem;
+}
+
+.roster-summary span {
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-transform: uppercase;
+}
+
+.roster-groups {
+  display: grid;
+  gap: 2rem;
+}
+
+.roster-group {
+  border: 1px solid var(--line);
+}
+
+.roster-group-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid var(--line);
+  background: #f2f0f1;
+}
+
+.roster-group-heading h3 {
+  margin: 0;
+  color: var(--navy);
+  font-family: "Oswald", sans-serif;
+  font-size: 1.35rem;
+  text-transform: uppercase;
+}
+
+.roster-group-heading span {
+  color: var(--muted);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.coach-group .roster-group-heading {
+  background: var(--navy);
+}
+
+.coach-group .roster-group-heading h3 {
+  color: white;
+}
+
+.coach-group .roster-group-heading span {
+  color: var(--red);
+}
+
+.roster-table-wrap {
+  overflow-x: auto;
+}
+
+.roster-table-wrap table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+.roster-table-wrap th,
+.roster-table-wrap td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.roster-table-wrap thead th {
+  color: var(--muted);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.roster-table-wrap tbody th {
+  color: var(--ink);
+  font-size: 0.85rem;
+}
+
+.roster-table-wrap tbody td {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.roster-table-wrap tbody td:nth-child(4) {
+  color: var(--navy);
+  font-weight: 700;
+}
+
+.roster-table-wrap tbody tr:last-child th,
+.roster-table-wrap tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.roster-table-wrap tbody tr:nth-child(even) {
+  background: #faf9f9;
+}
+
+.roster-note {
+  margin: 1rem 0 0;
+  color: var(--muted);
+  font-size: 0.72rem;
+  text-align: right;
+}
+
 @media (max-width: 850px) {
   .mileage-shell {
     grid-template-columns: 1fr;
@@ -1353,6 +1719,37 @@ footer span:first-child {
 
   .records-key {
     text-align: left;
+  }
+
+  .tool-section-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .tool-card-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .tool-card {
+    min-height: 280px;
+  }
+
+  .tool-form-page {
+    grid-template-columns: 1fr;
+  }
+
+  .tool-form-intro > a {
+    margin-bottom: 4rem;
+  }
+
+  .roster-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .roster-table-wrap {
+    background:
+      linear-gradient(90deg, transparent calc(100% - 28px), rgb(101 27 50 / 8%));
   }
 }
 

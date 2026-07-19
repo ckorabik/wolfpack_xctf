@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Wolfpack XC | Email Helper</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20260719a" />
+    <script src="email-helper.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a><nav aria-label="Main navigation"><a href="index.html">Home</a><a href="mileage.html">Mileage</a><a class="active" aria-current="page" href="coach-tools.html">Coach Tools</a><a href="records.html">Records</a><a href="history.html">History</a><a href="roster.html">Roster</a><a href="pace-groups.html">Pace Groups</a><a href="workout-blog.html">Workouts</a><a href="supplemental-workouts.html">Supplemental</a></nav></header>
+    <main class="tool-form-page">
+      <section class="tool-form-intro"><a href="coach-tools.html">← Back to Coach Tools</a><p class="eyebrow">Communication</p><h1>Email Helper</h1><p>Draft a clear Wolfpack message, then open it in your default email application.</p></section>
+      <section class="tool-form-panel">
+        <form id="email-helper-form">
+          <div class="field"><label for="email-to">Recipients</label><input id="email-to" name="to" type="text" placeholder="team@example.com" /></div>
+          <div class="field"><label for="email-subject">Subject</label><input id="email-subject" name="subject" type="text" placeholder="Wolfpack XC — Weekly Update" required /></div>
+          <div class="field"><label for="email-greeting">Greeting</label><input id="email-greeting" name="greeting" type="text" value="Wolfpack athletes and families," /></div>
+          <div class="field"><label for="email-message">Message</label><textarea id="email-message" name="message" rows="9" placeholder="Share the key update, schedule, and action items." required></textarea></div>
+          <div class="field"><label for="email-signoff">Sign-off</label><input id="email-signoff" name="signoff" type="text" value="Go Wolfpack!" /></div>
+          <button id="email-open-button" type="submit"><span>Open email draft</span><span>→</span></button>
+          <p class="privacy-note">No email addresses or message content are stored by this page.</p>
+        </form>
+      </section>
+    </main>
+  </body>
+</html>
