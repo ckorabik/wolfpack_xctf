@@ -1570,9 +1570,18 @@ footer span:first-child {
   font-size: 0.8rem;
 }
 
-.roster-table-wrap tbody td:nth-child(4) {
+.roster-table-wrap tbody td:nth-child(3) {
   color: var(--navy);
   font-weight: 700;
+}
+
+.roster-table-wrap .coaches-table {
+  min-width: 520px;
+}
+
+.roster-table-wrap .coaches-table th,
+.roster-table-wrap .coaches-table td {
+  width: 50%;
 }
 
 .roster-table-wrap tbody tr:last-child th,

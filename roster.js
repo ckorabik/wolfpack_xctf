@@ -75,7 +75,15 @@ function parseRoster(text) {
     .split("\n")
     .map((line) => {
       const [lastName, firstName, grade, group, uniformTop, uniformBottom] = line.split("|");
-      return { lastName, firstName, grade, group, uniformTop, uniformBottom };
+      return {
+        lastName,
+        firstName,
+        grade,
+        group,
+        weeklyMileageGoal: "",
+        uniformTop,
+        uniformBottom,
+      };
     });
 }
 
@@ -97,7 +105,7 @@ function createGroupSection(group, members) {
   const heading = document.createElement("div");
   heading.className = "roster-group-heading";
   const title = document.createElement("h3");
-  title.textContent = group === "TBD" ? "Group TBD" : group;
+  title.textContent = group === "TBD" ? "Group TBD" : group === "Coach" ? "Coaches" : group;
   const count = document.createElement("span");
   count.textContent = `${members.length} ${group === "Coach" ? "coaches" : "athletes"}`;
   heading.append(title, count);
@@ -105,21 +113,41 @@ function createGroupSection(group, members) {
   const wrapper = document.createElement("div");
   wrapper.className = "roster-table-wrap";
   const table = document.createElement("table");
-  table.innerHTML = "<thead><tr><th>Last</th><th>First</th><th>Grade</th><th>Group</th><th>Uniform Top</th><th>Uniform Bottom</th></tr></thead>";
   const body = document.createElement("tbody");
 
-  members.forEach((member) => {
-    const row = document.createElement("tr");
-    row.append(
-      createCell("td", member.lastName),
-      createCell("th", member.firstName, "row"),
-      createCell("td", member.grade),
-      createCell("td", member.group),
-      createCell("td", member.uniformTop),
-      createCell("td", member.uniformBottom),
-    );
-    body.append(row);
-  });
+  if (group === "Coach") {
+    table.className = "coaches-table";
+    table.innerHTML = "<thead><tr><th>Name</th><th>Role</th></tr></thead>";
+    const coachRoles = {
+      "Chris Korabik": "Head Cross Country Coach",
+      "Heraldo Morrison": "Head Track & Field Coach",
+    };
+
+    members.forEach((member) => {
+      const fullName = `${member.firstName} ${member.lastName}`;
+      const row = document.createElement("tr");
+      row.append(
+        createCell("th", fullName, "row"),
+        createCell("td", coachRoles[fullName] || "Assistant Coach"),
+      );
+      body.append(row);
+    });
+  } else {
+    table.innerHTML = "<thead><tr><th>Name</th><th>Grade</th><th>Weekly Mileage Goal</th><th>Issued Uniform Top</th><th>Issued Uniform Bottom</th></tr></thead>";
+
+    members.forEach((member) => {
+      const displayName = `${member.firstName} ${member.lastName}`;
+      const row = document.createElement("tr");
+      row.append(
+        createCell("th", displayName, "row"),
+        createCell("td", member.grade),
+        createCell("td", member.weeklyMileageGoal),
+        createCell("td", member.uniformTop),
+        createCell("td", member.uniformBottom),
+      );
+      body.append(row);
+    });
+  }
 
   table.append(body);
   wrapper.append(table);
