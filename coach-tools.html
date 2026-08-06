@@ -3,25 +3,26 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Wolfpack XC coaching tools." />
-    <title>Wolfpack XC | Coach Tools</title>
+    <meta name="description" content="Wolfpack XC coach utilities." />
+    <title>Wolfpack XC | Coach Utilities</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260719a" />
+    <link rel="stylesheet" href="styles.css?v=20260806k" />
+    <script type="module" src="coach-auth.js?v=20260806a"></script>
   </head>
-  <body>
+  <body class="coach-auth-pending" data-coach-only>
     <header class="site-header">
       <a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a>
       <nav aria-label="Main navigation">
-        <a href="index.html">Home</a><a href="mileage.html">Mileage</a><a class="active" aria-current="page" href="coach-tools.html">Coach Tools</a><a href="records.html">Records</a><a href="history.html">History</a><a href="roster.html">Roster</a><a href="pace-groups.html">Pace Groups</a><a href="workout-blog.html">Workouts</a><a href="supplemental-workouts.html">Supplemental</a>
+        <a href="index.html">Home</a><a href="schedule.html">Schedule</a><a href="athlete-utilities.html">Athlete Home</a><a class="active" aria-current="page" href="coach-tools.html">Coach Utilities</a><a href="records.html">Records</a><a href="history.html">History</a><a href="roster.html">Roster</a><a href="supplemental-workouts.html">Supplemental</a>
       </nav>
     </header>
     <main class="coach-tools-page">
       <section class="page-hero coach-tools-hero">
         <p class="eyebrow">Coaching staff</p>
-        <h1>Coach Tools</h1>
-        <p>A focused workspace for team operations, communication, and workout publishing.</p>
+        <h1>Coach Utilities</h1>
+        <p>Attendance, workout publishing, and current team data.</p>
       </section>
       <section class="tool-section">
         <div class="tool-section-heading">
@@ -30,8 +31,8 @@
         </div>
         <div class="tool-card-grid">
           <a class="tool-card" href="attendance.html"><span class="tool-number">01</span><div class="tool-icon" aria-hidden="true">✓</div><h3>Attendance</h3><p>Track practice attendance, planned absences, and athlete availability.</p><b>Open attendance <span>→</span></b></a>
-          <a class="tool-card" href="email-helper.html"><span class="tool-number">02</span><div class="tool-icon" aria-hidden="true">@</div><h3>Email Helper</h3><p>Build consistent team announcements and open them in your email client.</p><b>Open email helper <span>→</span></b></a>
-          <a class="tool-card featured-tool" href="workout-log.html"><span class="tool-number">03</span><div class="tool-icon" aria-hidden="true">W</div><h3>Workout Log</h3><p>Draft team sessions that will feed the public Workouts page.</p><b>Open workout log <span>→</span></b></a>
+          <a class="tool-card featured-tool" href="workout-log.html"><span class="tool-number">02</span><div class="tool-icon" aria-hidden="true">W</div><h3>Workout Log</h3><p>Draft team sessions that will feed the public Workouts page.</p><b>Open workout log <span>→</span></b></a>
+          <a class="tool-card" href="https://github.com/ckorabik/wolfpack_xctf/actions/workflows/sync-google-drive.yml" target="_blank" rel="noopener"><span class="tool-number">03</span><div class="tool-icon" aria-hidden="true">↻</div><h3>Sync with Google Drive</h3><p>Refresh the website schedule and roster from the coaching spreadsheets.</p><b>Open secure sync <span>→</span></b></a>
         </div>
       </section>
     </main>

@@ -4,23 +4,70 @@ const statusBox = document.querySelector("#form-status");
 const submitButton = document.querySelector("#submit-button");
 const successCard = document.querySelector("#success-card");
 const submitAnotherButton = document.querySelector("#submit-another");
-const weekEndingInput = document.querySelector("#week-ending");
 
 const fields = {
   athleteName: document.querySelector("#athlete-name"),
-  weekEnding: weekEndingInput,
+  weekEnding: document.querySelector("#week-ending"),
   weeklyMiles: document.querySelector("#weekly-miles"),
+  crossTrainMinutes: document.querySelector("#cross-train-minutes"),
   trainingFeel: document.querySelector("#training-feel"),
 };
 
-function getMostRecentSunday() {
-  const date = new Date();
-  date.setDate(date.getDate() - date.getDay());
-  return date.toISOString().slice(0, 10);
+function toLocalIsoDate(date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
 }
 
-weekEndingInput.value = getMostRecentSunday();
-weekEndingInput.max = new Date().toISOString().slice(0, 10);
+function getRecentWeeks() {
+  const today = new Date();
+  today.setHours(12, 0, 0, 0);
+  const daysSinceMonday = today.getDay() === 0 ? 6 : today.getDay() - 1;
+  const currentMonday = new Date(today);
+  currentMonday.setDate(today.getDate() - daysSinceMonday);
+
+  return Array.from({ length: 4 }, (_, index) => {
+    const monday = new Date(currentMonday);
+    monday.setDate(currentMonday.getDate() - index * 7);
+    const sunday = new Date(monday);
+    sunday.setDate(monday.getDate() + 6);
+
+    const startLabel = new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+    }).format(monday);
+    const endLabel = new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+    }).format(sunday);
+
+    return { value: toLocalIsoDate(sunday), label: `${startLabel} – ${endLabel}` };
+  });
+}
+
+function populateAthletes() {
+  const rosterPeople = window.WOLFPACK_ROSTER || [];
+  const nameCounts = rosterPeople.reduce((counts, person) => {
+    const name = `${person.firstName} ${person.lastName}`;
+    counts[name] = (counts[name] || 0) + 1;
+    return counts;
+  }, {});
+  const athletes = rosterPeople
+    .map((person) => {
+      const name = `${person.firstName} ${person.lastName}`;
+      if (person.group === "Coach") return `${name} (Coach)`;
+      return nameCounts[name] > 1 ? `${name} (${person.group})` : name;
+    })
+    .sort((first, second) => first.localeCompare(second));
+
+  athletes.forEach((name) => fields.athleteName.add(new Option(name, name)));
+}
+
+function populateWeeks() {
+  getRecentWeeks().forEach((week) => fields.weekEnding.add(new Option(week.label, week.value)));
+}
 
 function clearErrors() {
   Object.entries(fields).forEach(([name, input]) => {
@@ -38,20 +85,33 @@ function showFieldError(name, message) {
 
 function validate(data) {
   let valid = true;
+  const allowedAthletes = new Set([...fields.athleteName.options].map((option) => option.value).filter(Boolean));
+  const allowedWeeks = new Set([...fields.weekEnding.options].map((option) => option.value).filter(Boolean));
 
-  if (!data.athleteName.trim()) {
-    showFieldError("athleteName", "Please enter your name.");
+  if (!allowedAthletes.has(data.athleteName)) {
+    showFieldError("athleteName", "Choose an athlete from the roster.");
     valid = false;
   }
 
-  if (!data.weekEnding) {
-    showFieldError("weekEnding", "Choose the week-ending date.");
+  if (!allowedWeeks.has(data.weekEnding)) {
+    showFieldError("weekEnding", "Choose one of the four available training weeks.");
     valid = false;
   }
 
   const miles = Number(data.weeklyMiles);
   if (data.weeklyMiles === "" || Number.isNaN(miles) || miles < 0 || miles > 200) {
     showFieldError("weeklyMiles", "Enter mileage between 0 and 200.");
+    valid = false;
+  }
+
+  const crossTrainMinutes = Number(data.crossTrainMinutes);
+  if (
+    data.crossTrainMinutes === "" ||
+    !Number.isInteger(crossTrainMinutes) ||
+    crossTrainMinutes < 0 ||
+    crossTrainMinutes > 3000
+  ) {
+    showFieldError("crossTrainMinutes", "Enter whole minutes between 0 and 3,000.");
     valid = false;
   }
 
@@ -94,16 +154,13 @@ form.addEventListener("submit", async (event) => {
 
   const endpoint = window.WOLFPACK_CONFIG?.googleScriptUrl?.trim();
   if (!endpoint) {
-    showStatus(
-      "The Google Sheet connection has not been configured yet. Add the Apps Script Web App URL to config.js.",
-    );
+    showStatus("The Google Sheet connection has not been configured yet. Add the Apps Script Web App URL to config.js.");
     return;
   }
 
   setLoading(true);
 
   try {
-    // text/plain avoids a browser CORS preflight for Google Apps Script.
     const response = await fetch(endpoint, {
       method: "POST",
       headers: { "Content-Type": "text/plain;charset=utf-8" },
@@ -117,9 +174,7 @@ form.addEventListener("submit", async (event) => {
 
     showSuccess();
   } catch (error) {
-    showStatus(
-      `${error.message} Please check your connection and try again. If this continues, contact your coach.`,
-    );
+    showStatus(`${error.message} Please check your connection and try again. If this continues, contact your coach.`);
   } finally {
     setLoading(false);
   }
@@ -127,10 +182,12 @@ form.addEventListener("submit", async (event) => {
 
 submitAnotherButton.addEventListener("click", () => {
   form.reset();
-  weekEndingInput.value = getMostRecentSunday();
   clearErrors();
   successCard.hidden = true;
   formHeading.hidden = false;
   form.hidden = false;
   fields.athleteName.focus();
 });
+
+populateAthletes();
+populateWeeks();

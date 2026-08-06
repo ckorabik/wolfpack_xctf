@@ -8,18 +8,45 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260718b" />
+    <link rel="stylesheet" href="styles.css?v=20260806k" />
+    <script src="roster.js?v=20260806i" defer></script>
+    <script src="attendance.js?v=20260806k" defer></script>
+    <script type="module" src="coach-auth.js?v=20260806a"></script>
   </head>
-  <body>
+  <body class="coach-auth-pending" data-coach-only>
     <header class="site-header">
       <a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a>
       <nav aria-label="Main navigation">
-        <a href="index.html">Home</a><a href="mileage.html">Mileage</a><a class="active" aria-current="page" href="coach-tools.html">Coach Tools</a><a href="records.html">Records</a><a href="history.html">History</a><a href="roster.html">Roster</a><a href="pace-groups.html">Pace Groups</a><a href="workout-blog.html">Workouts</a><a href="supplemental-workouts.html">Supplemental</a>
+        <a href="index.html">Home</a><a href="schedule.html">Schedule</a><a href="athlete-utilities.html">Athlete Home</a><a class="active" aria-current="page" href="coach-tools.html">Coach Utilities</a><a href="records.html">Records</a><a href="history.html">History</a><a href="roster.html">Roster</a><a href="supplemental-workouts.html">Supplemental</a>
       </nav>
     </header>
-    <main class="section-page">
-      <section class="page-hero"><p class="eyebrow">Show up for the pack</p><h1>Attendance</h1><p>Practice attendance, planned absences, and team availability in one place.</p></section>
-      <section class="coming-soon"><span>Attendance</span><h2>Check-in tools coming soon</h2><p>This page is ready for daily attendance and planned-absence reporting.</p></section>
+    <main class="attendance-page">
+      <section class="page-hero attendance-hero"><p class="eyebrow">Coach utility</p><h1>Attendance</h1><p>Record attendance by event, workout group, or grade.</p></section>
+
+      <form id="attendance-form" class="attendance-form" novalidate>
+        <input type="hidden" name="submissionType" value="attendance" />
+        <section class="attendance-controls" aria-labelledby="event-heading">
+          <div class="attendance-section-heading"><div><p class="eyebrow">Event</p><h2 id="event-heading">Select an event or date</h2></div><p>Provide either field. If both are filled, the event name is used for the Attendance sheet column.</p></div>
+          <div class="field-row attendance-event-fields">
+            <div class="field"><div class="label-line"><label for="attendance-event">Upcoming event</label><span>Optional</span></div><select id="attendance-event" disabled><option value="">Loading schedule…</option></select><span class="error" data-error-for="event"></span></div>
+            <div class="field" id="attendance-date-field"><div class="label-line"><label for="attendance-date">Attendance date</label><span>Optional</span></div><input id="attendance-date" type="date" /><span class="error" data-error-for="date"></span></div>
+          </div>
+        </section>
+
+        <section class="attendance-roster-section" aria-labelledby="attendance-roster-heading">
+          <div class="attendance-section-heading"><div><p class="eyebrow">Roster</p><h2 id="attendance-roster-heading">Mark attendance</h2></div><p id="attendance-progress">0 athletes marked</p></div>
+          <div class="attendance-filters" aria-label="Roster filters">
+            <div class="field"><label for="attendance-group-filter">Workout group</label><select id="attendance-group-filter"><option value="">All groups</option></select></div>
+            <div class="field"><label for="attendance-grade-filter">Grade</label><select id="attendance-grade-filter"><option value="">All grades</option></select></div>
+          </div>
+          <div id="attendance-roster" class="attendance-roster"></div>
+        </section>
+
+        <div id="attendance-status" class="status attendance-status" role="status" aria-live="polite"></div>
+        <button id="attendance-submit" class="attendance-submit" type="submit"><span>Record attendance</span><span aria-hidden="true">→</span></button>
+      </form>
+
+      <section id="attendance-success" class="success-card attendance-success" hidden tabindex="-1"><div class="success-icon" aria-hidden="true">✓</div><p class="eyebrow">Saved</p><h2>Attendance recorded.</h2><p>The selected athletes were added to the event column.</p><button id="attendance-another" class="secondary-button" type="button">Record another group</button></section>
     </main>
   </body>
 </html>

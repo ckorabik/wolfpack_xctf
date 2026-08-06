@@ -8,93 +8,40 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260718d" />
+    <link rel="stylesheet" href="styles.css?v=20260806k" />
+    <script type="module" src="coach-auth.js?v=20260806a"></script>
   </head>
   <body>
     <header class="site-header">
       <a class="brand" href="index.html"><img class="brand-logo" src="images/wolf.jpg" alt="" /><span>Wolfpack XC</span></a>
       <nav aria-label="Main navigation">
         <a class="active" aria-current="page" href="index.html">Home</a>
-        <a href="mileage.html">Mileage</a>
-        <a href="coach-tools.html">Coach Tools</a>
+        <a href="schedule.html">Schedule</a>
+        <a href="athlete-utilities.html">Athlete Home</a>
+        <a href="coach-tools.html">Coach Utilities</a>
         <a href="records.html">Records</a>
         <a href="history.html">History</a>
         <a href="roster.html">Roster</a>
-        <a href="pace-groups.html">Pace Groups</a>
-        <a href="workout-blog.html">Workouts</a>
         <a href="supplemental-workouts.html">Supplemental</a>
       </nav>
     </header>
 
-    <main>
-      <section class="home-hero">
-        <div class="hero-inner">
-          <p class="eyebrow">Wolfpack cross country</p>
-          <h1>Run together.<br />Rise together.</h1>
-          <p class="lede">The home for team updates, training resources, weekly mileage, and everything Wolfpack XC.</p>
-          <div class="hero-actions">
-            <a class="button primary" href="mileage.html">Log weekly mileage <span>→</span></a>
-            <a class="button ghost" href="workout-blog.html">View this week's workout</a>
-          </div>
-        </div>
-        <div class="hero-stat">
-          <img class="hero-logo" src="images/wolf.jpg" alt="Saint Ignatius Athletics wolf logo" />
-          <span>This week's focus</span>
-          <strong>Consistency</strong>
-          <p>Stack good days. Recover well. Bring the pack with you.</p>
-        </div>
-      </section>
-
-      <section class="dashboard section-wrap">
+    <main class="schedule-home">
+      <section class="home-upcoming section-wrap" aria-labelledby="upcoming-heading">
         <div class="section-heading">
-          <div><p class="eyebrow">Team dashboard</p><h2>What's happening</h2></div>
-          <p>Your weekly starting line for team news and training.</p>
+          <div>
+            <p class="eyebrow">Wolfpack cross country</p>
+            <h1 id="upcoming-heading">Upcoming Events</h1>
+            <p class="upcoming-intro">The next four dates on the team calendar, updated automatically.</p>
+          </div>
+          <a class="button schedule-button" href="schedule.html">View Season Schedule <span>→</span></a>
         </div>
-
-        <div class="dashboard-grid">
-          <section class="content-card announcements">
-            <div class="card-heading"><span class="card-icon">!</span><div><p class="eyebrow">Latest</p><h3>Announcements</h3></div></div>
-            <article class="announcement featured">
-              <time datetime="2026-07-18">July 18</time>
-              <div><h4>Welcome to the Wolfpack team hub</h4><p>This site will be the central place for schedules, team resources, and weekly mileage.</p></div>
-            </article>
-            <article class="announcement">
-              <time datetime="2026-07-20">July 20</time>
-              <div><h4>Weekly mileage check-in</h4><p>Submit your total mileage by Sunday evening so coaches can review the week.</p></div>
-            </article>
-          </section>
-
-          <section class="content-card events">
-            <div class="card-heading"><span class="card-icon">→</span><div><p class="eyebrow">On deck</p><h3>Upcoming events</h3></div></div>
-            <ol class="event-list">
-              <li><div class="date-block"><strong>20</strong><span>Jul</span></div><div><h4>Sunday mileage deadline</h4><p>8:00 PM · Online</p></div></li>
-              <li><div class="date-block"><strong>21</strong><span>Jul</span></div><div><h4>Team practice</h4><p>7:00 AM · Meet at school</p></div></li>
-              <li><div class="date-block"><strong>25</strong><span>Jul</span></div><div><h4>Long run</h4><p>7:00 AM · Location TBA</p></div></li>
-            </ol>
-          </section>
-
-          <section class="content-card leaderboard">
-            <div class="card-heading"><span class="card-icon">↗</span><div><p class="eyebrow">This week</p><h3>Mileage leaderboard</h3></div></div>
-            <div class="empty-leaderboard">
-              <span class="track-lines" aria-hidden="true"></span>
-              <h4>First results coming soon</h4>
-              <p>Leaderboard totals will appear here once athletes begin logging the week.</p>
-              <a href="mileage.html">Submit your mileage →</a>
-            </div>
-          </section>
-        </div>
-      </section>
-
-      <section class="quick-links section-wrap">
-        <p class="eyebrow">Explore the team</p>
-        <div class="link-grid">
-          <a href="records.html"><span>01</span><h3>Records</h3><p>Program bests and all-time lists.</p><b>→</b></a>
-          <a href="roster.html"><span>02</span><h3>Roster</h3><p>Meet the athletes and coaches.</p><b>→</b></a>
-          <a href="pace-groups.html"><span>03</span><h3>Pace Groups</h3><p>Find the right training rhythm.</p><b>→</b></a>
-          <a href="supplemental-workouts.html"><span>04</span><h3>Extra Work</h3><p>Strength, mobility, and recovery.</p><b>→</b></a>
+        <div class="content-card events upcoming-events-card">
+          <ol class="event-list upcoming-events-list" id="upcoming-events-list" hidden></ol>
+          <p class="upcoming-events-status" id="upcoming-events-status" role="status">Loading the latest schedule…</p>
         </div>
       </section>
     </main>
-    <footer><span>Wolfpack XC</span><span>Run with purpose. Run with the pack.</span></footer>
+    <script src="home-schedule.js?v=20260806c" defer></script>
   </body>
 </html>

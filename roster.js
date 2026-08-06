@@ -68,6 +68,36 @@ Z.|Andrew|9|TBD||
 `;
 
 const groupOrder = ["O'Hara", "Patton", "Keelan", "Santino", "Conroy", "TBD", "Coach"];
+const groupMileageGoals = {
+  Conroy: "25-30",
+  Keelan: "25-30",
+  Santino: "25-30",
+  TBD: "TBD",
+};
+const weeklyGoalOverrides = {
+  "O'Hara|Alrik S.": "40-45",
+  "O'Hara|Brendan H.": "40-45",
+  "O'Hara|Charlie M.": "50-55",
+  "O'Hara|Michael G.": "45-50",
+  "O'Hara|Joseph H.": "40-45",
+  "O'Hara|John H.": "30-35",
+  "O'Hara|Edward L.": "45-50",
+  "O'Hara|Devlin B.": "40-45",
+  "Patton|Edward M.": "25-30",
+  "Patton|Julien D.": "TBD",
+  "Patton|Clark H.": "TBD",
+  "Patton|Samuel J.": "25-30",
+  "Patton|Jameson M.": "TBD",
+  "Patton|Joseph R.": "TBD",
+  "Patton|Jack S.": "TBD",
+  "Patton|Ari T.": "TBD",
+  "Patton|Dylan W.": "TBD",
+  "Patton|Zachary H.": "25-30",
+  "Patton|Beau C.": "25-30",
+  "Patton|Nathan B.": "30-35",
+  "Patton|William D.": "40-45",
+  "Patton|Nicholas S.": "TBD",
+};
 
 function parseRoster(text) {
   return text
@@ -75,12 +105,14 @@ function parseRoster(text) {
     .split("\n")
     .map((line) => {
       const [lastName, firstName, grade, group, uniformTop, uniformBottom] = line.split("|");
+      const displayName = `${firstName} ${lastName}`;
       return {
         lastName,
         firstName,
         grade,
         group,
-        weeklyMileageGoal: "",
+        weeklyMileageGoal:
+          weeklyGoalOverrides[`${group}|${displayName}`] || groupMileageGoals[group] || "",
         uniformTop,
         uniformBottom,
       };
@@ -123,6 +155,13 @@ function createGroupSection(group, members) {
       "Heraldo Morrison": "Head Track & Field Coach",
     };
 
+    const coachOrder = ["Chris Korabik", "Heraldo Morrison", "David Cooke", "Aaron Harris", "Tony Sacco"];
+    members.sort(
+      (first, second) =>
+        coachOrder.indexOf(`${first.firstName} ${first.lastName}`) -
+        coachOrder.indexOf(`${second.firstName} ${second.lastName}`),
+    );
+
     members.forEach((member) => {
       const fullName = `${member.firstName} ${member.lastName}`;
       const row = document.createElement("tr");
@@ -156,14 +195,18 @@ function createGroupSection(group, members) {
 }
 
 const roster = parseRoster(rosterData);
+window.WOLFPACK_ROSTER = roster;
 const container = document.querySelector("#roster-groups");
-const fragment = document.createDocumentFragment();
 
-groupOrder.forEach((group) => {
-  const members = roster.filter((person) => person.group === group);
-  if (members.length) fragment.append(createGroupSection(group, members));
-});
+if (container) {
+  const fragment = document.createDocumentFragment();
 
-container.append(fragment);
-document.querySelector("#athlete-count").textContent = roster.filter((person) => person.group !== "Coach").length;
-document.querySelector("#coach-count").textContent = roster.filter((person) => person.group === "Coach").length;
+  groupOrder.forEach((group) => {
+    const members = roster.filter((person) => person.group === group);
+    if (members.length) fragment.append(createGroupSection(group, members));
+  });
+
+  container.append(fragment);
+  document.querySelector("#athlete-count").textContent = roster.filter((person) => person.group !== "Coach").length;
+  document.querySelector("#coach-count").textContent = roster.filter((person) => person.group === "Coach").length;
+}

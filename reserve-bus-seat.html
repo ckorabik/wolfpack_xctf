@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Wolfpack XC bus reservations." />
+    <title>Wolfpack XC | Bus Reservation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css?v=20260806k" />
+    <script src="config.js"></script>
+    <script src="roster.js?v=20260806h" defer></script>
+    <script src="bus-reservations.js?v=20260806h" defer></script>
+    <script type="module" src="coach-auth.js?v=20260806a"></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a>
+      <nav aria-label="Main navigation">
+        <a href="index.html">Home</a><a href="schedule.html">Schedule</a><a class="active" aria-current="page" href="athlete-utilities.html">Athlete Home</a><a href="coach-tools.html">Coach Utilities</a><a href="records.html">Records</a><a href="history.html">History</a><a href="roster.html">Roster</a><a href="supplemental-workouts.html">Supplemental</a>
+      </nav>
+    </header>
+    <main class="mileage-shell bus-reservation-shell">
+      <section class="mileage-intro" aria-labelledby="page-title">
+        <div class="intro-copy"><p class="eyebrow">Team travel</p><h1 id="page-title">Bus Reservation</h1><p class="lede">Indicate whether you will use team transportation for an upcoming event.</p></div>
+      </section>
+      <section class="form-panel" aria-labelledby="form-title">
+        <div class="form-heading"><p class="eyebrow">Transportation response</p><h2 id="form-title">Submit a response</h2><p>Responses go directly to the team's private Google Sheet.</p></div>
+        <form id="bus-reservation-form" novalidate>
+          <input type="hidden" name="submissionType" value="busReservation" />
+          <div class="field"><label for="rider-name">Rider name</label><select id="rider-name" name="riderName" required><option value="">Choose a name</option></select><span class="error" data-error-for="riderName"></span></div>
+          <div class="field"><label for="bus-event">Event</label><select id="bus-event" name="event" required disabled><option value="">Loading upcoming events…</option></select><span class="error" data-error-for="event"></span></div>
+          <div class="field"><label for="taking-bus">Taking the bus?</label><select id="taking-bus" name="takingBus" required><option value="">Choose yes or no</option><option value="Yes">Yes</option><option value="No">No</option></select><span class="error" data-error-for="takingBus"></span></div>
+          <div id="bus-form-status" class="status" role="status" aria-live="polite"></div>
+          <button id="bus-submit-button" type="submit"><span>Submit bus response</span><span aria-hidden="true">→</span></button>
+          <p class="privacy-note">Your response is visible only to the Wolfpack coaching staff.</p>
+        </form>
+        <section id="bus-success-card" class="success-card" hidden tabindex="-1"><div class="success-icon" aria-hidden="true">✓</div><p class="eyebrow">Submitted</p><h2>Response saved.</h2><p>Your bus response has been added to the team sheet.</p><button id="bus-submit-another" class="secondary-button" type="button">Submit another response</button></section>
+      </section>
+    </main>
+  </body>
+</html>

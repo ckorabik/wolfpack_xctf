@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+functions/node_modules/
+.firebase/
+firebase-debug.log*
