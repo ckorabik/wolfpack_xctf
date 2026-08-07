@@ -93,12 +93,22 @@ Run the workflow with **Preview changes without publishing** enabled to download
 a patch without changing the website. Disable preview to commit and publish the
 generated snapshots.
 
-## Coach authentication
+## Site and coach authentication
+
+The entire site is protected by a landing-page gate. Team members can enter the
+shared access code, while coaches can sign in with an approved Google account.
+Standard users never see Coach Utilities links, and coach-only pages independently
+verify the coach claim if someone visits their URL directly.
 
 Coach Utilities uses Google sign-in through the dedicated `wolfpack-xctf`
 Firebase project. The approved email list is stored in the
 `COACH_EMAIL_ALLOWLIST` Secret Manager secret and checked by callable functions;
 it is not included in public site files or Firestore.
+
+The shared site code is stored in the `SITE_ACCESS_CODE` Secret Manager secret,
+not in the public repository. Successful code entry creates a Firebase anonymous
+session with a standard-user claim. To change the code, update that secret and
+redeploy `functions:getSiteAccess`.
 
 The following pages require approved coach access:
 
@@ -112,7 +122,7 @@ for athlete mileage and bus-reservation submissions only.
 
 Firebase project setup:
 
-1. Enable Google as an Authentication provider.
+1. Enable Google and Anonymous as Authentication providers.
 2. Add `wolfpack-xctf.com`, `www.wolfpack-xctf.com` if used, and
    `ckorabik.github.io` to Authentication authorized domains.
 3. Enable the Google Sheets API for project `wolfpack-xctf`.

@@ -1,11 +1,14 @@
 const { initializeApp } = require("firebase-admin/app");
+const { getAuth } = require("firebase-admin/auth");
 const { defineSecret } = require("firebase-functions/params");
 const { HttpsError, onCall } = require("firebase-functions/v2/https");
 const { google } = require("googleapis");
+const crypto = require("node:crypto");
 
 initializeApp();
 
 const coachEmailAllowlist = defineSecret("COACH_EMAIL_ALLOWLIST");
+const siteAccessCode = defineSecret("SITE_ACCESS_CODE");
 const REGION = "us-central1";
 const ATTENDANCE_SPREADSHEET_ID = "1NqXh-ZTTKSjP0RnBgNUT_kCvh4PrbVRxxAMSPGPcxPY";
 const ATTENDANCE_SHEET_NAME = "XC 2026 Attendance";
@@ -91,6 +94,12 @@ function requireApprovedCoach(request) {
     throw new HttpsError("permission-denied", "This Google account is not approved for Coach Utilities.");
   }
   return email;
+}
+
+function accessCodesMatch(submittedCode) {
+  const expected = Buffer.from(siteAccessCode.value().trim());
+  const submitted = Buffer.from(String(submittedCode || "").trim());
+  return expected.length === submitted.length && crypto.timingSafeEqual(expected, submitted);
 }
 
 function validateAttendance(data) {
@@ -233,6 +242,20 @@ exports.getCoachAccess = onCall(
   (request) => {
     const email = requireApprovedCoach(request);
     return { authorized: true, email };
+  },
+);
+
+exports.getSiteAccess = onCall(
+  { region: REGION, secrets: [siteAccessCode], enforceAppCheck: false },
+  async (request) => {
+    if (!request.auth || request.auth.token.firebase?.sign_in_provider !== "anonymous") {
+      throw new HttpsError("unauthenticated", "Start a standard access session before entering the team code.");
+    }
+    if (!accessCodesMatch(request.data?.accessCode)) {
+      throw new HttpsError("permission-denied", "That access code is not valid.");
+    }
+    await getAuth().setCustomUserClaims(request.auth.uid, { siteAccess: true, role: "standard" });
+    return { authorized: true };
   },
 );
 

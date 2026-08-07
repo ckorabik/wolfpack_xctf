@@ -1,15 +1,14 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import {
   getAuth,
+  getIdTokenResult,
   GoogleAuthProvider,
   onAuthStateChanged,
+  signInAnonymously,
   signInWithPopup,
   signOut,
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
-import {
-  getFunctions,
-  httpsCallable,
-} from "https://www.gstatic.com/firebasejs/12.16.0/firebase-functions.js";
+import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-functions.js";
 import { firebaseConfig, functionsRegion } from "./auth-config.js";
 
 const app = initializeApp(firebaseConfig);
@@ -19,18 +18,21 @@ const provider = new GoogleAuthProvider();
 provider.setCustomParameters({ hd: "ignatius.org", prompt: "select_account" });
 
 const getCoachAccess = httpsCallable(functions, "getCoachAccess");
+const getSiteAccess = httpsCallable(functions, "getSiteAccess");
 const recordAttendanceCall = httpsCallable(functions, "recordAttendance");
 let currentCoach = null;
 let accessCheck = null;
+let authGate = null;
 
-function signInErrorMessage(error) {
+function authErrorMessage(error) {
   if (error?.code === "auth/popup-closed-by-user") return "Google sign-in was closed before it finished.";
   if (error?.code === "auth/popup-blocked") return "Your browser blocked the Google sign-in window. Allow popups and try again.";
-  return error?.message || "Google sign-in could not be completed.";
+  if (error?.code === "functions/permission-denied") return error.message || "That account or access code is not approved.";
+  return error?.message || "Authentication could not be completed.";
 }
 
 async function verifyCoach(user, force = false) {
-  if (!user) return null;
+  if (!user || user.isAnonymous) return null;
   if (!force && accessCheck?.uid === user.uid) return accessCheck.promise;
   const promise = getCoachAccess().then(({ data }) => {
     if (!data?.authorized) throw new Error("This Google account is not on the approved coach list.");
@@ -41,9 +43,38 @@ async function verifyCoach(user, force = false) {
   return promise;
 }
 
+async function hasStandardAccess(user, forceRefresh = false) {
+  if (!user?.isAnonymous) return false;
+  const token = await getIdTokenResult(user, forceRefresh);
+  return token.claims.siteAccess === true && token.claims.role === "standard";
+}
+
 async function coachSignIn() {
   const result = await signInWithPopup(auth, provider);
-  return verifyCoach(result.user, true);
+  try {
+    return await verifyCoach(result.user, true);
+  } catch (error) {
+    await signOut(auth);
+    throw error;
+  }
+}
+
+async function standardSignIn(accessCode) {
+  let user = auth.currentUser;
+  if (!user?.isAnonymous) {
+    await signOut(auth);
+    user = null;
+  }
+  if (!user) user = (await signInAnonymously(auth)).user;
+  try {
+    const { data } = await getSiteAccess({ accessCode });
+    if (!data?.authorized) throw new Error("That access code is not valid.");
+    await user.getIdToken(true);
+    return user;
+  } catch (error) {
+    await signOut(auth);
+    throw error;
+  }
 }
 
 function createHeaderControl(header) {
@@ -63,7 +94,7 @@ function createHeaderControl(header) {
         window.location.href = "coach-tools.html";
       }
     } catch (error) {
-      window.alert(signInErrorMessage(error));
+      window.alert(authErrorMessage(error));
     } finally {
       button.disabled = false;
     }
@@ -72,7 +103,31 @@ function createHeaderControl(header) {
   return button;
 }
 
-function createGate() {
+function createSiteGate() {
+  const gate = document.createElement("section");
+  gate.className = "site-auth-gate";
+  gate.setAttribute("role", "dialog");
+  gate.setAttribute("aria-modal", "true");
+  gate.setAttribute("aria-labelledby", "site-login-title");
+  gate.innerHTML = `
+    <div class="site-auth-card">
+      <div class="site-auth-brand"><span class="brand-mark">W</span><span>Wolfpack XC</span></div>
+      <p class="eyebrow">Team access</p>
+      <h1 id="site-login-title">Welcome to the Pack</h1>
+      <p class="site-auth-intro">Coaches can continue with Google. Athletes and families can enter the team access code.</p>
+      <button class="site-google-button" type="button" data-coach-sign-in>Coach sign-in with Google <span>→</span></button>
+      <div class="site-auth-divider"><span>or</span></div>
+      <form class="site-code-form" data-access-form>
+        <label for="site-access-code">Team access code</label>
+        <div><input id="site-access-code" name="accessCode" type="password" inputmode="numeric" autocomplete="one-time-code" maxlength="12" required /><button type="submit">Enter site <span>→</span></button></div>
+      </form>
+      <p class="site-auth-status" data-auth-message role="status"></p>
+    </div>`;
+  document.body.append(gate);
+  return gate;
+}
+
+function createCoachGate() {
   const gate = document.createElement("section");
   gate.className = "coach-auth-gate";
   gate.setAttribute("role", "region");
@@ -82,17 +137,11 @@ function createGate() {
       <p class="eyebrow">Restricted access</p>
       <h1>Coach Login</h1>
       <p data-auth-message>Sign in with an approved coach Google account to continue.</p>
-      <button class="primary-button" type="button" data-auth-sign-in>Continue with Google <span>→</span></button>
+      <button class="primary-button" type="button" data-coach-sign-in>Continue with Google <span>→</span></button>
       <a href="index.html">Return home</a>
     </div>`;
   document.querySelector(".site-header")?.after(gate);
   return gate;
-}
-
-function revealCoachPage(gate) {
-  document.body.classList.remove("coach-auth-pending");
-  document.body.classList.add("coach-auth-approved");
-  gate?.remove();
 }
 
 function showGateMessage(gate, message) {
@@ -100,43 +149,95 @@ function showGateMessage(gate, message) {
   if (element) element.textContent = message;
 }
 
-async function initializeCoachPage() {
-  const coachOnly = document.body.hasAttribute("data-coach-only");
-  const header = document.querySelector(".site-header");
-  const headerButton = header ? createHeaderControl(header) : null;
-  const gate = coachOnly ? createGate() : null;
-  const gateButton = gate?.querySelector("[data-auth-sign-in]");
+function revealSite(role) {
+  document.body.classList.remove("site-auth-pending", "coach-auth-pending", "site-standard", "site-coach");
+  document.body.classList.add(role === "coach" ? "site-coach" : "site-standard");
+  authGate?.remove();
+  authGate = null;
+}
 
-  gateButton?.addEventListener("click", async () => {
-    gateButton.disabled = true;
+function showSiteGate(message = "") {
+  document.body.classList.add("site-auth-pending");
+  if (!authGate?.isConnected || !authGate.classList.contains("site-auth-gate")) authGate = createSiteGate();
+  showGateMessage(authGate, message);
+  wireGateActions(authGate);
+}
+
+function wireGateActions(gate) {
+  if (gate.dataset.wired) return;
+  gate.dataset.wired = "true";
+  const coachButton = gate.querySelector("[data-coach-sign-in]");
+  const accessForm = gate.querySelector("[data-access-form]");
+  coachButton?.addEventListener("click", async () => {
+    coachButton.disabled = true;
     showGateMessage(gate, "Checking your Google account…");
     try {
       await coachSignIn();
-      revealCoachPage(gate);
+      revealSite("coach");
     } catch (error) {
-      showGateMessage(gate, signInErrorMessage(error));
+      showGateMessage(gate, authErrorMessage(error));
     } finally {
-      gateButton.disabled = false;
+      coachButton.disabled = false;
     }
   });
+  accessForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const submit = accessForm.querySelector("button[type=submit]");
+    const code = new FormData(accessForm).get("accessCode");
+    submit.disabled = true;
+    showGateMessage(gate, "Checking the team access code…");
+    try {
+      await standardSignIn(code);
+      revealSite("standard");
+    } catch (error) {
+      showGateMessage(gate, authErrorMessage(error));
+      accessForm.querySelector("input")?.focus();
+    } finally {
+      submit.disabled = false;
+    }
+  });
+}
+
+async function initializeSiteAuthentication() {
+  const coachOnly = document.body.hasAttribute("data-coach-only");
+  document.body.classList.add("site-auth-pending");
+  const header = document.querySelector(".site-header");
+  const headerButton = header ? createHeaderControl(header) : null;
 
   onAuthStateChanged(auth, async (user) => {
     currentCoach = null;
     if (!user) {
       if (headerButton) headerButton.textContent = "Coach Login";
-      if (coachOnly) showGateMessage(gate, "Sign in with an approved coach Google account to continue.");
+      showSiteGate();
       return;
     }
     try {
-      const coach = await verifyCoach(user);
-      if (headerButton) {
-        headerButton.textContent = "Coach Logout";
-        headerButton.title = coach.email;
+      if (!user.isAnonymous) {
+        const coach = await verifyCoach(user);
+        if (!coach) throw new Error("This Google account is not approved for Coach Utilities.");
+        if (headerButton) {
+          headerButton.textContent = "Coach Logout";
+          headerButton.title = coach.email;
+        }
+        revealSite("coach");
+        return;
       }
-      if (coachOnly) revealCoachPage(gate);
-    } catch (error) {
+      if (!(await hasStandardAccess(user))) {
+        await signOut(auth);
+        return;
+      }
+      if (coachOnly) {
+        document.body.classList.remove("site-auth-pending");
+        authGate?.remove();
+        authGate = createCoachGate();
+        wireGateActions(authGate);
+        return;
+      }
       if (headerButton) headerButton.textContent = "Coach Login";
-      if (coachOnly) showGateMessage(gate, "This Google account is not on the approved coach list.");
+      revealSite("standard");
+    } catch (error) {
+      if (!user.isAnonymous) await signOut(auth);
+      showSiteGate(authErrorMessage(error));
     }
   });
 }
@@ -146,7 +247,7 @@ window.WOLFPACK_AUTH = {
     return currentCoach;
   },
   async requireCoach() {
-    if (!auth.currentUser) throw new Error("Please sign in with an approved coach account.");
+    if (!auth.currentUser || auth.currentUser.isAnonymous) throw new Error("Please sign in with an approved coach account.");
     return verifyCoach(auth.currentUser);
   },
   async recordAttendance(payload) {
@@ -157,7 +258,7 @@ window.WOLFPACK_AUTH = {
 };
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initializeCoachPage, { once: true });
+  document.addEventListener("DOMContentLoaded", initializeSiteAuthentication, { once: true });
 } else {
-  initializeCoachPage();
+  initializeSiteAuthentication();
 }
