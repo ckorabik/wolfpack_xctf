@@ -741,6 +741,117 @@ body.site-standard a[href="coach-tools.html"] {
   cursor: wait;
 }
 
+.weekly-workout-panel {
+  max-width: 1120px;
+}
+
+.week-planner-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.week-planner-header .field {
+  width: min(100%, 320px);
+  margin: 0;
+}
+
+.week-range {
+  margin: 0 0 0.75rem;
+  color: var(--navy);
+  font-family: "Oswald", sans-serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.weekly-workout-days {
+  display: grid;
+  gap: 1rem;
+}
+
+.weekly-workout-day {
+  margin: 0;
+  padding: 1.35rem;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--gold);
+  background: white;
+}
+
+.weekly-workout-day legend {
+  display: flex;
+  min-width: 230px;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2rem;
+  padding: 0 0.65rem;
+  color: var(--navy);
+  font-family: "Oswald", sans-serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.weekly-workout-day legend time {
+  color: var(--muted);
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.workout-prompt-grid {
+  display: grid;
+  grid-template-columns: 0.85fr 1.3fr 0.85fr;
+  gap: 1rem;
+}
+
+.weekly-workout-day .field {
+  margin-bottom: 1rem;
+}
+
+.workout-prompt-grid .field {
+  margin-bottom: 0;
+}
+
+.weekly-workout-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.weekly-workout-actions button {
+  min-height: 3.25rem;
+  padding: 0 1.2rem;
+  border: 0;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.weekly-workout-actions .secondary-button {
+  border: 1px solid var(--line);
+  background: white;
+  color: var(--navy);
+}
+
+@media (max-width: 760px) {
+  .week-planner-header {
+    display: block;
+  }
+
+  .week-range {
+    margin-top: 1rem;
+  }
+
+  .workout-prompt-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .site-auth-status {
   min-height: 1.4rem;
   margin: 1rem 0 0;

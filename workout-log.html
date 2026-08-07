@@ -5,22 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Wolfpack XC | Workout Log</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260806n" />
+    <link rel="stylesheet" href="styles.css?v=20260806o" />
     <script type="module" src="coach-auth.js?v=20260806f"></script>
+    <script src="workout-log.js?v=20260806a" defer></script>
   </head>
   <body class="site-auth-pending coach-auth-pending" data-coach-only>
     <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a><nav aria-label="Main navigation"><a href="index.html">Home</a><a href="schedule.html">Schedule</a><a href="athlete-utilities.html">Athlete Home</a><a class="active" aria-current="page" href="coach-tools.html">Coach Utilities</a><a href="records.html">Records</a><a href="history.html">History</a><a href="roster.html">Roster</a></nav></header>
     <main class="tool-form-page">
-      <section class="tool-form-intro"><a href="coach-tools.html">← Back to Coach Utilities</a><p class="eyebrow">Training publisher</p><h1>Workout Log</h1><p>Build a structured team workout for publication on the Workouts page.</p><div class="tool-notice"><strong>Publishing connection planned</strong><span>The form layout is ready. Saving and publishing will be connected to the coach bulk-sync workflow.</span></div></section>
-      <section class="tool-form-panel">
+      <section class="tool-form-intro"><a href="coach-tools.html">← Back to Coach Utilities</a><p class="eyebrow">Weekly training planner</p><h1>Workout Log</h1><p>Build the team plan from Monday through Sunday. Each day prompts for the warmup, main workout, and supplemental work.</p><div class="tool-notice"><strong>Drafts save in this browser</strong><span>The Google Drive publishing connection will be added later. For now, save a working weekly draft on this device.</span></div></section>
+      <section class="tool-form-panel weekly-workout-panel">
         <form id="workout-log-form">
-          <div class="field-row"><div class="field"><label for="workout-date">Workout date</label><input id="workout-date" type="date" /></div><div class="field"><label for="workout-type">Session type</label><select id="workout-type"><option>Easy run</option><option>Long run</option><option>Tempo / threshold</option><option>Intervals</option><option>Race</option><option>Recovery</option></select></div></div>
-          <div class="field"><label for="workout-title">Workout title</label><input id="workout-title" type="text" placeholder="Threshold repeats at the lakefront" /></div>
-          <div class="field"><label for="workout-purpose">Purpose</label><textarea id="workout-purpose" rows="3" placeholder="What adaptation or skill is this session targeting?"></textarea></div>
-          <div class="field"><label for="workout-details">Workout details</label><textarea id="workout-details" rows="7" placeholder="Warm-up, main set, recovery, cool-down, and total volume."></textarea></div>
-          <div class="field"><label for="workout-groups">Pace groups / modifications</label><textarea id="workout-groups" rows="4" placeholder="List group-specific volume, pace, or recovery adjustments."></textarea></div>
-          <div class="field"><label for="workout-notes">Coach notes</label><textarea id="workout-notes" rows="4" placeholder="Execution cues, route notes, weather adjustments, or reminders."></textarea></div>
-          <button type="button" disabled><span>Publish to Workouts</span><span>Coming soon</span></button>
+          <div class="week-planner-header">
+            <div class="field"><label for="workout-week">Week starting Monday</label><input id="workout-week" name="weekStart" type="date" required /></div>
+            <p id="workout-week-range" class="week-range" aria-live="polite"></p>
+          </div>
+          <div id="weekly-workout-days" class="weekly-workout-days"></div>
+          <div class="weekly-workout-actions">
+            <button class="primary-button" type="submit">Save weekly draft <span>→</span></button>
+            <button class="secondary-button" id="clear-workout-draft" type="button">Clear this week</button>
+          </div>
+          <p id="workout-save-status" class="form-status" role="status"></p>
         </form>
       </section>
     </main>
