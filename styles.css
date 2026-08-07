@@ -1655,7 +1655,12 @@ footer span:first-child {
 
 .timeline-item.has-image {
   grid-template-columns: 92px 48px minmax(0, 1fr) minmax(190px, 0.55fr);
-  gap: 0 1.25rem;
+  gap: 0;
+}
+
+.timeline-item.has-image > .timeline-image-slot,
+.timeline-item.has-image > .timeline-photo {
+  margin-left: 1.25rem;
 }
 
 .timeline-year {
@@ -2640,15 +2645,17 @@ footer span:first-child {
     font-size: 1.05rem;
   }
 
-  .timeline-image-slot {
+  .timeline-item.has-image > .timeline-image-slot {
     grid-column: 3;
     min-height: 125px;
     margin-top: 0.75rem;
+    margin-left: 0;
   }
 
-  .timeline-photo {
+  .timeline-item.has-image > .timeline-photo {
     grid-column: 3;
     margin-top: 0.75rem;
+    margin-left: 0;
   }
 
   .records-section {
