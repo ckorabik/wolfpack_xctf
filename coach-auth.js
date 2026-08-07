@@ -22,6 +22,8 @@ provider.setCustomParameters({ hd: "ignatius.org", prompt: "select_account" });
 const getCoachAccess = httpsCallable(functions, "getCoachAccess");
 const getSiteAccess = httpsCallable(functions, "getSiteAccess");
 const recordAttendanceCall = httpsCallable(functions, "recordAttendance");
+const STANDARD_ACCESS_KEY = "wolfpack-standard-access";
+const STANDARD_ACCESS_DAYS = 30;
 let currentCoach = null;
 let accessCheck = null;
 let authGate = null;
@@ -31,6 +33,26 @@ function authErrorMessage(error) {
   if (error?.code === "auth/popup-blocked") return "Your browser blocked the Google sign-in window. Allow popups and try again.";
   if (error?.code === "functions/permission-denied") return error.message || "That account or access code is not approved.";
   return error?.message || "Authentication could not be completed.";
+}
+
+function rememberStandardAccess() {
+  const expires = Date.now() + STANDARD_ACCESS_DAYS * 24 * 60 * 60 * 1000;
+  try {
+    window.localStorage.setItem(STANDARD_ACCESS_KEY, String(expires));
+  } catch {}
+  if (location.hostname === "wolfpack-xctf.com" || location.hostname.endsWith(".wolfpack-xctf.com")) {
+    document.cookie = `${STANDARD_ACCESS_KEY}=${expires}; Max-Age=${STANDARD_ACCESS_DAYS * 86400}; Path=/; Domain=wolfpack-xctf.com; SameSite=Lax; Secure`;
+  }
+}
+
+function hasRememberedStandardAccess() {
+  let expires = 0;
+  try {
+    expires = Number(window.localStorage.getItem(STANDARD_ACCESS_KEY)) || 0;
+  } catch {}
+  const cookie = document.cookie.split("; ").find((item) => item.startsWith(`${STANDARD_ACCESS_KEY}=`));
+  expires = Math.max(expires, Number(cookie?.split("=")[1]) || 0);
+  return expires > Date.now();
 }
 
 async function verifyCoach(user, force = false) {
@@ -72,6 +94,7 @@ async function standardSignIn(accessCode) {
     const { data } = await getSiteAccess({ accessCode });
     if (!data?.authorized) throw new Error("That access code is not valid.");
     await user.getIdToken(true);
+    rememberStandardAccess();
     return user;
   } catch (error) {
     await signOut(auth);
@@ -205,6 +228,7 @@ async function initializeSiteAuthentication() {
   document.body.classList.add("site-auth-pending");
   const header = document.querySelector(".site-header");
   const headerButton = header ? createHeaderControl(header) : null;
+  const rememberedStandardAccess = hasRememberedStandardAccess();
 
   try {
     await setPersistence(auth, browserLocalPersistence);
@@ -217,6 +241,17 @@ async function initializeSiteAuthentication() {
     currentCoach = null;
     if (!user) {
       if (headerButton) headerButton.textContent = "Coach Login";
+      if (rememberedStandardAccess) {
+        if (coachOnly) {
+          document.body.classList.remove("site-auth-pending");
+          authGate?.remove();
+          authGate = createCoachGate();
+          wireGateActions(authGate);
+        } else {
+          revealSite("standard");
+        }
+        return;
+      }
       showSiteGate();
       return;
     }
@@ -232,9 +267,14 @@ async function initializeSiteAuthentication() {
         return;
       }
       if (!(await hasStandardAccess(user))) {
+        if (rememberedStandardAccess && !coachOnly) {
+          revealSite("standard");
+          return;
+        }
         await signOut(auth);
         return;
       }
+      rememberStandardAccess();
       if (coachOnly) {
         document.body.classList.remove("site-auth-pending");
         authGate?.remove();
