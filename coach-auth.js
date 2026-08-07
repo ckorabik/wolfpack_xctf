@@ -3,12 +3,10 @@ import {
   browserLocalPersistence,
   getAuth,
   getIdTokenResult,
-  getRedirectResult,
   GoogleAuthProvider,
   onAuthStateChanged,
   signInAnonymously,
-  signInWithRedirect,
-  signInWithPopup,
+  signInWithCredential,
   signOut,
   setPersistence,
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
@@ -18,8 +16,7 @@ import { firebaseConfig, functionsRegion } from "./auth-config.js";
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const functions = getFunctions(app, functionsRegion);
-const provider = new GoogleAuthProvider();
-provider.setCustomParameters({ hd: "ignatius.org", prompt: "select_account" });
+const GOOGLE_CLIENT_ID = "144270530422-2a27v11915le689usqer1rlqo2qi20um.apps.googleusercontent.com";
 
 const getCoachAccess = httpsCallable(functions, "getCoachAccess");
 const getSiteAccess = httpsCallable(functions, "getSiteAccess");
@@ -29,10 +26,10 @@ const STANDARD_ACCESS_DAYS = 30;
 let currentCoach = null;
 let accessCheck = null;
 let authGate = null;
+let googleIdentityPromise = null;
 
 function authErrorMessage(error) {
-  if (error?.code === "auth/popup-closed-by-user") return "Google sign-in was closed before it finished.";
-  if (error?.code === "auth/popup-blocked") return "Your browser blocked the Google sign-in window. Allow popups and try again.";
+  if (error?.code === "auth/unauthorized-domain") return "Google sign-in is not authorized for this website domain.";
   if (error?.code === "functions/permission-denied") return error.message || "That account or access code is not approved.";
   return error?.message || "Authentication could not be completed.";
 }
@@ -85,18 +82,56 @@ async function hasStandardAccess(user, forceRefresh = false) {
   return token.claims.siteAccess === true && token.claims.role === "standard";
 }
 
-async function coachSignIn() {
-  const result = await signInWithPopup(auth, provider);
-  try {
-    return await verifyCoach(result.user, true);
-  } catch (error) {
-    await signOut(auth);
-    throw error;
-  }
+function loadGoogleIdentity() {
+  if (window.google?.accounts?.id) return Promise.resolve(window.google);
+  if (googleIdentityPromise) return googleIdentityPromise;
+  googleIdentityPromise = new Promise((resolve, reject) => {
+    const script = document.createElement("script");
+    script.src = "https://accounts.google.com/gsi/client";
+    script.async = true;
+    script.onload = () => resolve(window.google);
+    script.onerror = () => reject(new Error("Google sign-in could not be loaded. Check your connection and try again."));
+    document.head.append(script);
+  });
+  return googleIdentityPromise;
 }
 
-async function coachRedirectSignIn() {
-  await signInWithRedirect(auth, provider);
+async function renderCoachSignIn(gate) {
+  const container = gate.querySelector("[data-google-coach-button]");
+  if (!container || container.dataset.rendered) return;
+  container.dataset.rendered = "true";
+  try {
+    const google = await loadGoogleIdentity();
+    google.accounts.id.initialize({
+      client_id: GOOGLE_CLIENT_ID,
+      hd: "ignatius.org",
+      auto_select: false,
+      cancel_on_tap_outside: false,
+      callback: async ({ credential }) => {
+        showGateMessage(gate, "Checking your coach account…");
+        try {
+          const firebaseCredential = GoogleAuthProvider.credential(credential);
+          const result = await signInWithCredential(auth, firebaseCredential);
+          await verifyCoach(result.user, true);
+          revealSite("coach");
+        } catch (error) {
+          if (auth.currentUser && !auth.currentUser.isAnonymous) await signOut(auth);
+          showGateMessage(gate, authErrorMessage(error));
+        }
+      },
+    });
+    google.accounts.id.renderButton(container, {
+      type: "standard",
+      theme: "outline",
+      size: "large",
+      text: "continue_with",
+      shape: "rectangular",
+      width: Math.min(400, Math.max(240, container.clientWidth || 320)),
+    });
+  } catch (error) {
+    container.dataset.rendered = "";
+    showGateMessage(gate, authErrorMessage(error));
+  }
 }
 
 async function standardSignIn(accessCode) {
@@ -154,8 +189,7 @@ function createSiteGate() {
       <p class="eyebrow">Team access</p>
       <h1 id="site-login-title">Welcome to the Pack</h1>
       <p class="site-auth-intro">Coaches can continue with Google. Athletes and families can enter the team access code.</p>
-      <button class="site-google-button" type="button" data-coach-sign-in>Coach sign-in with Google <span>→</span></button>
-      <button class="site-google-fallback" type="button" data-coach-redirect>Use full-page Google sign-in</button>
+      <div class="google-coach-button" data-google-coach-button aria-label="Coach sign-in with Google"></div>
       <div class="site-auth-divider"><span>or</span></div>
       <form class="site-code-form" data-access-form>
         <label for="site-access-code">Team access code</label>
@@ -177,8 +211,7 @@ function createCoachGate() {
       <p class="eyebrow">Restricted access</p>
       <h1>Coach Login</h1>
       <p data-auth-message>Sign in with an approved coach Google account to continue.</p>
-      <button class="primary-button" type="button" data-coach-sign-in>Continue with Google <span>→</span></button>
-      <button class="site-google-fallback" type="button" data-coach-redirect>Use full-page Google sign-in</button>
+      <div class="google-coach-button" data-google-coach-button aria-label="Coach sign-in with Google"></div>
       <a href="index.html">Return home</a>
     </div>`;
   document.querySelector(".site-header")?.after(gate);
@@ -207,31 +240,8 @@ function showSiteGate(message = "") {
 function wireGateActions(gate) {
   if (gate.dataset.wired) return;
   gate.dataset.wired = "true";
-  const coachButton = gate.querySelector("[data-coach-sign-in]");
-  const redirectButton = gate.querySelector("[data-coach-redirect]");
   const accessForm = gate.querySelector("[data-access-form]");
-  coachButton?.addEventListener("click", async () => {
-    coachButton.disabled = true;
-    showGateMessage(gate, "Checking your Google account…");
-    try {
-      await coachSignIn();
-      revealSite("coach");
-    } catch (error) {
-      showGateMessage(gate, authErrorMessage(error));
-    } finally {
-      coachButton.disabled = false;
-    }
-  });
-  redirectButton?.addEventListener("click", async () => {
-    redirectButton.disabled = true;
-    showGateMessage(gate, "Opening Google sign-in…");
-    try {
-      await coachRedirectSignIn();
-    } catch (error) {
-      showGateMessage(gate, authErrorMessage(error));
-      redirectButton.disabled = false;
-    }
-  });
+  renderCoachSignIn(gate);
   accessForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     const submit = accessForm.querySelector("button[type=submit]");
@@ -264,15 +274,6 @@ async function initializeSiteAuthentication() {
     return;
   }
 
-  let redirectError = "";
-  try {
-    const redirectResult = await getRedirectResult(auth);
-    if (redirectResult?.user) await verifyCoach(redirectResult.user, true);
-  } catch (error) {
-    redirectError = authErrorMessage(error);
-    if (auth.currentUser) await signOut(auth);
-  }
-
   onAuthStateChanged(auth, async (user) => {
     currentCoach = null;
     if (!user) {
@@ -288,8 +289,7 @@ async function initializeSiteAuthentication() {
         }
         return;
       }
-      showSiteGate(redirectError);
-      redirectError = "";
+      showSiteGate();
       return;
     }
     try {

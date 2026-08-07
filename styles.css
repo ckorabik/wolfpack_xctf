@@ -650,6 +650,19 @@ body.site-standard a[href="coach-tools.html"] {
   line-height: 1.65;
 }
 
+.google-coach-button {
+  display: flex;
+  width: 100%;
+  min-height: 44px;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.google-coach-button > div,
+.google-coach-button iframe {
+  max-width: 100%;
+}
+
 .site-google-button,
 .site-code-form button {
   display: flex;
