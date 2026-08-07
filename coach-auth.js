@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-app.js";
 import {
+  browserLocalPersistence,
   getAuth,
   getIdTokenResult,
   GoogleAuthProvider,
@@ -7,6 +8,7 @@ import {
   signInAnonymously,
   signInWithPopup,
   signOut,
+  setPersistence,
 } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-auth.js";
 import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/12.16.0/firebase-functions.js";
 import { firebaseConfig, functionsRegion } from "./auth-config.js";
@@ -203,6 +205,13 @@ async function initializeSiteAuthentication() {
   document.body.classList.add("site-auth-pending");
   const header = document.querySelector(".site-header");
   const headerButton = header ? createHeaderControl(header) : null;
+
+  try {
+    await setPersistence(auth, browserLocalPersistence);
+  } catch (error) {
+    showSiteGate("Your browser could not save the login session. Allow site storage and try again.");
+    return;
+  }
 
   onAuthStateChanged(auth, async (user) => {
     currentCoach = null;
