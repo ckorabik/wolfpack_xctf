@@ -158,11 +158,8 @@ function validateWorkoutPlan(data) {
     return {
       day,
       focus: validateWorkoutText(session.focus, `${day} session focus`, 200),
-      warmup: validateWorkoutText(session.warmup, `${day} warmup`, 2000),
       workout: validateWorkoutText(session.workout, `${day} workout`, 4000),
-      supplemental: validateWorkoutText(session.supplemental, `${day} supplemental work`, 2000),
-      preRun: validateWorkoutChecklist(session.preRun),
-      postRun: validateWorkoutChecklist(session.postRun),
+      supplementalItems: validateWorkoutChecklist(session.supplementalItems),
     };
   });
   return { weekStart, sessions };

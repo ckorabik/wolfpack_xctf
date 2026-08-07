@@ -124,8 +124,8 @@ Weekly coach workout plans are stored in the Firestore `workoutPlans`
 collection, using the Monday date as the document ID. The authenticated
 `getWorkoutPlan` and `saveWorkoutPlan` callable functions are the only access
 path; direct browser reads and writes remain denied by Firestore rules. Each
-document contains Monday-through-Sunday session details plus pre-run and
-post-run routine selections.
+document contains Monday-through-Sunday session details plus a supplemental
+routine checklist for each day.
 
 Firebase project setup:
 

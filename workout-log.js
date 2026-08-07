@@ -43,12 +43,10 @@ function formatDate(date) {
 
 function checklistMarkup(dayKey) {
   return `<fieldset class="daily-supplement-checklist">
-    <legend>Pre / post run checklist</legend>
-    <div class="checklist-heading" aria-hidden="true"><span>Routine</span><span>Pre</span><span>Post</span></div>
+    <legend>Supplemental work</legend>
+    <p>Select every routine to include in this day's supplemental section.</p>
     ${supplementalOptions.map((option) => `<div class="checklist-row">
-      <span>${option}</span>
-      <label><input type="checkbox" name="${dayKey}-pre" value="${option}" /><span class="sr-only">${option} before the run</span></label>
-      <label><input type="checkbox" name="${dayKey}-post" value="${option}" /><span class="sr-only">${option} after the run</span></label>
+      <label><input type="checkbox" name="${dayKey}-supplemental-item" value="${option}" /><span>${option}</span></label>
     </div>`).join("")}
   </fieldset>`;
 }
@@ -66,12 +64,10 @@ function renderWeek() {
     return `<fieldset class="weekly-workout-day" data-day="${dayKey}">
       <legend><span>${dayName}</span><time datetime="${localDateValue(date)}">${formatDate(date)}</time></legend>
       <div class="field"><label for="${dayKey}-focus">Session focus</label><input id="${dayKey}-focus" name="${dayKey}-focus" type="text" maxlength="200" placeholder="Easy run, intervals, race, recovery…" /></div>
-      <div class="workout-prompt-grid">
-        <div class="field"><label for="${dayKey}-warmup">Warmup</label><textarea id="${dayKey}-warmup" name="${dayKey}-warmup" rows="4" maxlength="2000" placeholder="Running, drills, strides, mobility…"></textarea></div>
+      <div class="daily-workout-layout">
         <div class="field"><label for="${dayKey}-workout">Workout</label><textarea id="${dayKey}-workout" name="${dayKey}-workout" rows="5" maxlength="4000" placeholder="Main set, pace, recovery, volume, group modifications…"></textarea></div>
-        <div class="field"><label for="${dayKey}-supplemental">Supplemental work</label><textarea id="${dayKey}-supplemental" name="${dayKey}-supplemental" rows="4" maxlength="2000" placeholder="Additional notes for strength, mobility, or cooldown…"></textarea></div>
+        ${checklistMarkup(dayKey)}
       </div>
-      ${checklistMarkup(dayKey)}
     </fieldset>`;
   }).join("");
 }
@@ -87,8 +83,8 @@ function sessionValue(dayKey, field) {
   return String(form.elements.namedItem(`${dayKey}-${field}`)?.value || "").trim();
 }
 
-function selectedValues(dayKey, timing) {
-  return [...form.querySelectorAll(`input[name="${dayKey}-${timing}"]:checked`)].map((input) => input.value);
+function selectedSupplementalItems(dayKey) {
+  return [...form.querySelectorAll(`input[name="${dayKey}-supplemental-item"]:checked`)].map((input) => input.value);
 }
 
 function collectPlan() {
@@ -99,11 +95,8 @@ function collectPlan() {
       return {
         day,
         focus: sessionValue(day, "focus"),
-        warmup: sessionValue(day, "warmup"),
         workout: sessionValue(day, "workout"),
-        supplemental: sessionValue(day, "supplemental"),
-        preRun: selectedValues(day, "pre"),
-        postRun: selectedValues(day, "post"),
+        supplementalItems: selectedSupplementalItems(day),
       };
     }),
   };
@@ -113,16 +106,17 @@ function populatePlan(sessions) {
   if (!Array.isArray(sessions)) return;
   sessions.forEach((session) => {
     const day = String(session.day || "").toLowerCase();
-    ["focus", "warmup", "workout", "supplemental"].forEach((fieldName) => {
+    ["focus", "workout"].forEach((fieldName) => {
       const field = form.elements.namedItem(`${day}-${fieldName}`);
       if (field) field.value = session[fieldName] || "";
     });
-    ["preRun", "postRun"].forEach((timing) => {
-      const selected = new Set(Array.isArray(session[timing]) ? session[timing] : []);
-      const inputTiming = timing === "preRun" ? "pre" : "post";
-      form.querySelectorAll(`input[name="${day}-${inputTiming}"]`).forEach((input) => {
-        input.checked = selected.has(input.value);
-      });
+    const selected = new Set([
+      ...(Array.isArray(session.supplementalItems) ? session.supplementalItems : []),
+      ...(Array.isArray(session.preRun) ? session.preRun : []),
+      ...(Array.isArray(session.postRun) ? session.postRun : []),
+    ]);
+    form.querySelectorAll(`input[name="${day}-supplemental-item"]`).forEach((input) => {
+      input.checked = selected.has(input.value);
     });
   });
 }
