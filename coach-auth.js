@@ -20,6 +20,7 @@ const GOOGLE_CLIENT_ID = "144270530422-2a27v11915le689usqer1rlqo2qi20um.apps.goo
 
 const getCoachAccess = httpsCallable(functions, "getCoachAccess");
 const getSiteAccess = httpsCallable(functions, "getSiteAccess");
+const getLatestWorkoutPlanCall = httpsCallable(functions, "getLatestWorkoutPlan");
 const getWorkoutPlanCall = httpsCallable(functions, "getWorkoutPlan");
 const saveWorkoutPlanCall = httpsCallable(functions, "saveWorkoutPlan");
 const recordAttendanceCall = httpsCallable(functions, "recordAttendance");
@@ -233,6 +234,7 @@ function revealSite(role) {
   if (role === "coach" && currentCoach) {
     document.dispatchEvent(new CustomEvent("wolfpack-coach-ready", { detail: currentCoach }));
   }
+  document.dispatchEvent(new CustomEvent("wolfpack-site-ready", { detail: { role } }));
 }
 
 function showSiteGate(message = "") {
@@ -354,6 +356,11 @@ window.WOLFPACK_AUTH = {
   async saveWorkoutPlan(payload) {
     await this.requireCoach();
     const { data } = await saveWorkoutPlanCall(payload);
+    return data;
+  },
+  async getLatestWorkoutPlan() {
+    if (!auth.currentUser) throw new Error("Sign in to view the team workout plan.");
+    const { data } = await getLatestWorkoutPlanCall();
     return data;
   },
 };

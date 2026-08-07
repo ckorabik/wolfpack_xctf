@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="styles.css?v=20260807c" />
     <script src="roster.js?v=20260806i" defer></script>
     <script src="attendance.js?v=20260806k" defer></script>
-    <script type="module" src="coach-auth.js?v=20260807b"></script>
+    <script type="module" src="coach-auth.js?v=20260807c"></script>
   </head>
   <body class="site-auth-pending coach-auth-pending" data-coach-only>
     <header class="site-header">
@@ -28,7 +28,7 @@
         <section class="attendance-controls" aria-labelledby="event-heading">
           <div class="attendance-section-heading"><div><p class="eyebrow">Event</p><h2 id="event-heading">Select an event or date</h2></div><p>Provide either field. If both are filled, the event name is used for the Attendance sheet column.</p></div>
           <div class="field-row attendance-event-fields">
-            <div class="field"><div class="label-line"><label for="attendance-event">Upcoming event</label><span>Optional</span></div><select id="attendance-event" disabled><option value="">Loading schedule…</option></select><span class="error" data-error-for="event"></span></div>
+            <div class="field"><div class="label-line"><label for="attendance-event">Upcoming event</label><span>Optional</span></div><select id="attendance-event" disabled><option value="">Loading scheduleâ€¦</option></select><span class="error" data-error-for="event"></span></div>
             <div class="field" id="attendance-date-field"><div class="label-line"><label for="attendance-date">Attendance date</label><span>Optional</span></div><input id="attendance-date" type="date" /><span class="error" data-error-for="date"></span></div>
           </div>
         </section>
@@ -43,10 +43,10 @@
         </section>
 
         <div id="attendance-status" class="status attendance-status" role="status" aria-live="polite"></div>
-        <button id="attendance-submit" class="attendance-submit" type="submit"><span>Record attendance</span><span aria-hidden="true">→</span></button>
+        <button id="attendance-submit" class="attendance-submit" type="submit"><span>Record attendance</span><span aria-hidden="true">â†’</span></button>
       </form>
 
-      <section id="attendance-success" class="success-card attendance-success" hidden tabindex="-1"><div class="success-icon" aria-hidden="true">✓</div><p class="eyebrow">Saved</p><h2>Attendance recorded.</h2><p>The selected athletes were added to the event column.</p><button id="attendance-another" class="secondary-button" type="button">Record another group</button></section>
+      <section id="attendance-success" class="success-card attendance-success" hidden tabindex="-1"><div class="success-icon" aria-hidden="true">âœ“</div><p class="eyebrow">Saved</p><h2>Attendance recorded.</h2><p>The selected athletes were added to the event column.</p><button id="attendance-another" class="secondary-button" type="button">Record another group</button></section>
     </main>
   </body>
 </html>

@@ -2088,6 +2088,201 @@ footer span:first-child {
   border-left: 1px solid var(--line);
 }
 
+.athlete-tool-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.pace-table-page {
+  min-height: calc(100vh - 70px);
+}
+
+.pace-table-hero {
+  padding-bottom: clamp(6rem, 11vw, 10rem);
+}
+
+.pace-lookup-section {
+  width: min(1040px, 94vw);
+  margin: -4rem auto 5rem;
+  padding: clamp(1.25rem, 4vw, 3rem);
+  border-top: 5px solid var(--red);
+  background: white;
+  box-shadow: 0 24px 70px rgb(0 0 0 / 10%);
+}
+
+.pace-lookup-form {
+  gap: 1.75rem;
+}
+
+.pace-lookup-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+}
+
+.pace-lookup-heading h2,
+.pace-result h2 {
+  font-size: clamp(2rem, 5vw, 3.8rem);
+}
+
+.pace-lookup-heading > p {
+  max-width: 360px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.pace-distance-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.pace-distance-picker legend {
+  grid-column: 1 / -1;
+  margin-bottom: 0.5rem;
+  font-weight: 700;
+}
+
+.pace-distance-picker label {
+  position: relative;
+  cursor: pointer;
+}
+
+.pace-distance-picker input {
+  position: absolute;
+  opacity: 0;
+}
+
+.pace-distance-picker span {
+  display: grid;
+  min-height: 58px;
+  place-items: center;
+  border: 1px solid var(--line);
+  color: var(--navy);
+}
+
+.pace-distance-picker input:checked + span {
+  border-color: var(--red);
+  background: var(--navy);
+  color: white;
+  box-shadow: inset 0 -4px 0 var(--red);
+}
+
+.pace-distance-picker input:focus-visible + span {
+  outline: 3px solid rgb(215 174 85 / 45%);
+  outline-offset: 2px;
+}
+
+.pace-time-entry {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.pace-time-entry > div {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.pace-time-entry input {
+  min-width: 0;
+  min-height: 58px;
+  padding: 0 1rem;
+  border: 1px solid var(--line);
+  border-right: 0;
+  font-size: 1.15rem;
+}
+
+.pace-time-entry button {
+  min-height: 58px;
+  padding: 0 1.4rem;
+  border: 0;
+  background: var(--red);
+  color: var(--navy);
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.pace-time-entry small,
+.pace-rounding-note,
+.pace-source {
+  color: var(--muted);
+}
+
+.pace-result {
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 8rem;
+}
+
+.pace-rounding-note {
+  line-height: 1.6;
+}
+
+.pace-result-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin-top: 1.5rem;
+}
+
+.pace-result-card {
+  display: flex;
+  min-height: 145px;
+  flex-direction: column;
+  padding: 1.1rem;
+  border: 1px solid var(--line);
+  background: #faf9f9;
+}
+
+.pace-result-card p,
+.pace-result-card span {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+
+.pace-result-card p {
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.pace-result-card strong {
+  margin: auto 0 0.35rem;
+  color: var(--navy);
+  font-family: "Oswald", sans-serif;
+  font-size: 1.65rem;
+}
+
+.pace-result-unavailable strong {
+  font-family: inherit;
+  font-size: 0.85rem;
+}
+
+.pace-safety-note {
+  margin-top: 1rem;
+  padding: 1.25rem;
+  border-left: 4px solid var(--red);
+  background: #f5f1e8;
+}
+
+.pace-safety-note p {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.pace-source {
+  margin: 1.25rem 0 0;
+  font-size: 0.72rem;
+  text-align: right;
+}
+
 .tool-card {
   position: relative;
   display: flex;
@@ -2754,6 +2949,16 @@ footer span:first-child {
     margin-bottom: 4rem;
   }
 
+  .pace-lookup-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .pace-result-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
   .roster-heading {
     align-items: flex-start;
     flex-direction: column;
@@ -2870,12 +3075,305 @@ footer span:first-child {
     padding: 0.8rem 0.65rem;
   }
 
+  .pace-distance-picker,
+  .pace-result-grid,
+  .pace-time-entry > div {
+    grid-template-columns: 1fr;
+  }
+
+  .pace-time-entry input {
+    border-right: 1px solid var(--line);
+  }
+
+  .pace-time-entry button {
+    width: 100%;
+  }
+
+  .roster-section {
+    width: 94vw;
+    padding: 1rem;
+  }
+
+  .roster-summary {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .roster-groups {
+    gap: 1.25rem;
+  }
+
+  .roster-group-heading {
+    padding: 0.85rem 1rem;
+  }
+
+  .roster-table-wrap {
+    overflow: visible;
+    background: none;
+  }
+
+  .roster-table-wrap table,
+  .roster-table-wrap .coaches-table {
+    min-width: 0;
+  }
+
+  .roster-table-wrap thead {
+    display: none;
+  }
+
+  .roster-table-wrap tbody {
+    display: grid;
+    gap: 0.7rem;
+    padding: 0.7rem;
+  }
+
+  .roster-table-wrap tbody tr,
+  .roster-table-wrap tbody tr:nth-child(even) {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    overflow: hidden;
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    background: white;
+  }
+
+  .roster-table-wrap tbody th,
+  .roster-table-wrap tbody td,
+  .roster-table-wrap tbody tr:last-child th,
+  .roster-table-wrap tbody tr:last-child td {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.7rem;
+    border: 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .roster-table-wrap tbody th {
+    grid-column: 1 / -1;
+    border-top: 0;
+    background: #f7f5f5;
+    font-size: 0.95rem;
+  }
+
+  .roster-table-wrap tbody td::before,
+  .roster-table-wrap tbody th::before {
+    content: attr(data-label);
+    color: var(--muted);
+    font-size: 0.58rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .roster-table-wrap tbody td:nth-child(odd) {
+    border-left: 1px solid var(--line);
+  }
+
+  .roster-table-wrap .coaches-table tbody tr {
+    grid-template-columns: 1fr;
+  }
+
+  .roster-table-wrap .coaches-table tbody th,
+  .roster-table-wrap .coaches-table tbody td {
+    width: auto;
+    border-left: 0;
+  }
+
   .schedule-item {
     grid-template-columns: 62px 1fr;
     padding: 1rem;
   }
 
   .other-events-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.athlete-workout-page {
+  background: #f3efe9;
+}
+
+.athlete-workout-hero {
+  padding-bottom: 2.5rem;
+}
+
+.athlete-workout-section {
+  width: min(1180px, 92vw);
+  margin: 0 auto 6rem;
+  padding: clamp(1.4rem, 3vw, 2.5rem);
+  border-top: 6px solid var(--gold);
+  border-radius: 0 0 18px 18px;
+  background: white;
+  box-shadow: 0 18px 55px rgb(40 25 30 / 12%);
+}
+
+.athlete-workout-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.athlete-workout-heading h2 {
+  margin: 0.15rem 0 0;
+  color: var(--navy);
+  font-family: "Oswald", sans-serif;
+  font-size: clamp(1.9rem, 4vw, 3rem);
+  text-transform: uppercase;
+}
+
+.athlete-workout-updated,
+.athlete-workout-status {
+  color: var(--muted);
+}
+
+.athlete-workout-updated {
+  min-height: 1.3em;
+  margin: 0.4rem 0 0;
+  font-size: 0.85rem;
+}
+
+.workout-pace-link {
+  flex: 0 0 auto;
+  padding: 0.8rem 1rem;
+  border: 1px solid var(--maroon);
+  border-radius: 999px;
+  color: var(--maroon);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.workout-pace-link:hover {
+  background: var(--maroon);
+  color: white;
+}
+
+.athlete-workout-status {
+  margin: 2rem 0 0;
+  text-align: center;
+}
+
+.athlete-workout-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.athlete-workout-day {
+  position: relative;
+  min-width: 0;
+  padding: 1.4rem;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fcfbf9;
+}
+
+.athlete-workout-day.is-today {
+  border-color: var(--gold);
+  box-shadow: inset 5px 0 0 var(--gold);
+}
+
+.athlete-workout-day.is-today::after {
+  content: "Today";
+  position: absolute;
+  top: 0;
+  right: 0;
+  padding: 0.35rem 0.65rem;
+  border-radius: 0 13px 0 10px;
+  background: var(--gold);
+  color: var(--navy);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.athlete-workout-day header {
+  display: flex;
+  align-items: baseline;
+  gap: 0.65rem;
+  padding-right: 3rem;
+}
+
+.athlete-workout-day-name {
+  margin: 0;
+  color: var(--maroon);
+  font-family: "Oswald", sans-serif;
+  font-size: 1.35rem;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.athlete-workout-date {
+  color: var(--muted);
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.athlete-workout-focus {
+  margin: 1rem 0 0.45rem;
+  color: var(--navy);
+  font-size: 1.05rem;
+}
+
+.athlete-workout-details {
+  margin: 0;
+  color: var(--ink);
+  line-height: 1.65;
+  white-space: pre-wrap;
+}
+
+.athlete-workout-details.is-empty {
+  color: var(--muted);
+  font-style: italic;
+}
+
+.athlete-workout-supplemental {
+  margin-top: 1.15rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+.athlete-workout-supplemental > p {
+  margin: 0 0 0.65rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.athlete-workout-supplemental ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.athlete-workout-supplemental li {
+  padding: 0.42rem 0.65rem;
+  border-radius: 999px;
+  background: rgb(101 27 50 / 9%);
+  color: var(--maroon);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+@media (max-width: 720px) {
+  .athlete-workout-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .athlete-workout-grid {
     grid-template-columns: 1fr;
   }
 }

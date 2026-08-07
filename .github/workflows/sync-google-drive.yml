@@ -36,6 +36,7 @@ jobs:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           SCHEDULE_SPREADSHEET_ID: ${{ vars.SCHEDULE_SPREADSHEET_ID || '19gePPoZ1uYQoIN2wbQ_1B5hOrCZtNCpC2oKx0Mxaad0' }}
           ROSTER_SPREADSHEET_ID: ${{ vars.ROSTER_SPREADSHEET_ID || '1NdQhlH_nHeRzazzJbt2AIiRyicnYyNNk-VSgOVsGunY' }}
+          PACE_SPREADSHEET_ID: ${{ vars.PACE_SPREADSHEET_ID || '1Gce5YjTi014GzgxWwBCdqDXgKBx2eMftn6zt4EvhoDM' }}
         run: python scripts/sync_google_drive.py
 
       - name: Show generated changes
@@ -63,6 +64,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add schedule.html roster.js
+          git add schedule.html roster.js pace-table-data.js
           git commit -m "Sync website data from Google Drive"
           git push

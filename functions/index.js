@@ -112,6 +112,14 @@ function requireApprovedCoach(request) {
   return email;
 }
 
+function requireSiteAccess(request) {
+  if (!request.auth) throw new HttpsError("unauthenticated", "Sign in to view the team workout plan.");
+  if (request.auth.token.siteAccess === true && request.auth.token.role === "standard") return "standard";
+  const email = String(request.auth.token.email || "").trim().toLowerCase();
+  if (request.auth.token.email_verified && allowedCoachEmails().has(email)) return "coach";
+  throw new HttpsError("permission-denied", "This account does not have access to the team workout plan.");
+}
+
 function accessCodesMatch(submittedCode) {
   const expected = Buffer.from(siteAccessCode.value().trim());
   const submitted = Buffer.from(String(submittedCode || "").trim());
@@ -350,6 +358,27 @@ exports.saveWorkoutPlan = onCall(
       updatedBy: email,
     });
     return { saved: true, weekStart: plan.weekStart };
+  },
+);
+
+exports.getLatestWorkoutPlan = onCall(
+  { region: REGION, secrets: [coachEmailAllowlist], enforceAppCheck: false, invoker: "public" },
+  async (request) => {
+    requireSiteAccess(request);
+    const snapshot = await getFirestore()
+      .collection(WORKOUT_PLAN_COLLECTION)
+      .orderBy("updatedAt", "desc")
+      .limit(1)
+      .get();
+    if (snapshot.empty) return { plan: null };
+    const plan = snapshot.docs[0].data();
+    return {
+      plan: {
+        weekStart: plan.weekStart,
+        sessions: plan.sessions || [],
+        updatedAt: plan.updatedAt?.toDate?.().toISOString() || null,
+      },
+    };
   },
 );
 

@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[1]
 SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 SCHEDULE_TABS = ("Meets", "Other Events")
 ROSTER_TAB = "Full Team Roster"
+PACE_TAB = "Pace Table"
 
 
 def google_sheets_service():
@@ -37,14 +38,16 @@ def google_sheets_service():
     return build("sheets", "v4", credentials=credentials, cache_discovery=False)
 
 
-def read_tab(service, spreadsheet_id: str, tab_name: str) -> list[list[object]]:
+def read_tab(
+    service, spreadsheet_id: str, tab_name: str, *, formatted: bool = False
+) -> list[list[object]]:
     result = (
         service.spreadsheets()
         .values()
         .get(
             spreadsheetId=spreadsheet_id,
             range=f"'{tab_name}'!A1:Z1000",
-            valueRenderOption="UNFORMATTED_VALUE",
+            valueRenderOption="FORMATTED_VALUE" if formatted else "UNFORMATTED_VALUE",
             dateTimeRenderOption="SERIAL_NUMBER",
         )
         .execute()
@@ -236,6 +239,29 @@ def update_roster(service, spreadsheet_id: str) -> None:
     path.write_text(updated, encoding="utf-8", newline="\n")
 
 
+def update_pace_table(service, spreadsheet_id: str) -> None:
+    rows = read_tab(service, spreadsheet_id, PACE_TAB, formatted=True)
+    if len(rows) < 4:
+        raise RuntimeError("The Pace Table tab does not contain its header and pace rows.")
+    pace_rows = []
+    for source_row in rows[2:]:
+        row = [text(value) for value in (source_row + [""] * 10)[:10]]
+        if not row[0] or not row[1]:
+            continue
+        pace_rows.append(row)
+    if not pace_rows:
+        raise RuntimeError("The Pace Table tab did not contain any usable pace rows.")
+    payload = {
+        "source": "Pace Table",
+        "spreadsheetId": spreadsheet_id,
+        "rows": pace_rows,
+    }
+    javascript = "window.WOLFPACK_PACE_TABLE = " + json.dumps(
+        payload, ensure_ascii=False, indent=2
+    ) + ";\n"
+    (ROOT / "pace-table-data.js").write_text(javascript, encoding="utf-8", newline="\n")
+
+
 def required_environment(name: str) -> str:
     value = os.environ.get(name, "").strip()
     if not value:
@@ -247,7 +273,8 @@ def main() -> None:
     service = google_sheets_service()
     update_schedule(service, required_environment("SCHEDULE_SPREADSHEET_ID"))
     update_roster(service, required_environment("ROSTER_SPREADSHEET_ID"))
-    print("Updated schedule.html and roster.js from Google Sheets.")
+    update_pace_table(service, required_environment("PACE_SPREADSHEET_ID"))
+    print("Updated schedule.html, roster.js, and pace-table-data.js from Google Sheets.")
 
 
 if __name__ == "__main__":

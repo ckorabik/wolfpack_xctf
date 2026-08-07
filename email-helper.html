@@ -7,20 +7,20 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css?v=20260807c" />
     <script src="email-helper.js" defer></script>
-    <script type="module" src="coach-auth.js?v=20260807b"></script>
+    <script type="module" src="coach-auth.js?v=20260807c"></script>
   </head>
   <body class="site-auth-pending coach-auth-pending" data-coach-only>
     <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a><nav aria-label="Main navigation"><a href="index.html">Home</a><a href="schedule.html">Schedule</a><a href="athlete-utilities.html">Athlete Home</a><a class="active" aria-current="page" href="coach-tools.html">Coach Utilities</a><a href="records.html">Records</a><a href="history.html">History</a><a href="roster.html">Roster</a></nav></header>
     <main class="tool-form-page">
-      <section class="tool-form-intro"><a href="coach-tools.html">← Back to Coach Utilities</a><p class="eyebrow">Communication</p><h1>Email Helper</h1><p>Draft a clear Wolfpack message, then open it in your default email application.</p></section>
+      <section class="tool-form-intro"><a href="coach-tools.html">â† Back to Coach Utilities</a><p class="eyebrow">Communication</p><h1>Email Helper</h1><p>Draft a clear Wolfpack message, then open it in your default email application.</p></section>
       <section class="tool-form-panel">
         <form id="email-helper-form">
           <div class="field"><label for="email-to">Recipients</label><input id="email-to" name="to" type="text" placeholder="team@example.com" /></div>
-          <div class="field"><label for="email-subject">Subject</label><input id="email-subject" name="subject" type="text" placeholder="Wolfpack XC — Weekly Update" required /></div>
+          <div class="field"><label for="email-subject">Subject</label><input id="email-subject" name="subject" type="text" placeholder="Wolfpack XC â€” Weekly Update" required /></div>
           <div class="field"><label for="email-greeting">Greeting</label><input id="email-greeting" name="greeting" type="text" value="Wolfpack athletes and families," /></div>
           <div class="field"><label for="email-message">Message</label><textarea id="email-message" name="message" rows="9" placeholder="Share the key update, schedule, and action items." required></textarea></div>
           <div class="field"><label for="email-signoff">Sign-off</label><input id="email-signoff" name="signoff" type="text" value="Wolfpack XC Coaching Staff" /></div>
-          <button id="email-open-button" type="submit"><span>Open email draft</span><span>→</span></button>
+          <button id="email-open-button" type="submit"><span>Open email draft</span><span>â†’</span></button>
           <p class="privacy-note">No email addresses or message content are stored by this page.</p>
         </form>
       </section>

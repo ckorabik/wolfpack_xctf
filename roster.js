@@ -123,9 +123,10 @@ function displayValue(value) {
   return value?.trim() || "—";
 }
 
-function createCell(tag, value, scope) {
+function createCell(tag, value, scope, label) {
   const cell = document.createElement(tag);
   if (scope) cell.scope = scope;
+  if (label) cell.dataset.label = label;
   cell.textContent = displayValue(value);
   return cell;
 }
@@ -166,8 +167,8 @@ function createGroupSection(group, members) {
       const fullName = `${member.firstName} ${member.lastName}`;
       const row = document.createElement("tr");
       row.append(
-        createCell("th", fullName, "row"),
-        createCell("td", coachRoles[fullName] || "Assistant Coach"),
+        createCell("th", fullName, "row", "Name"),
+        createCell("td", coachRoles[fullName] || "Assistant Coach", undefined, "Role"),
       );
       body.append(row);
     });
@@ -178,11 +179,11 @@ function createGroupSection(group, members) {
       const displayName = `${member.firstName} ${member.lastName}`;
       const row = document.createElement("tr");
       row.append(
-        createCell("th", displayName, "row"),
-        createCell("td", member.grade),
-        createCell("td", member.weeklyMileageGoal),
-        createCell("td", member.uniformTop),
-        createCell("td", member.uniformBottom),
+        createCell("th", displayName, "row", "Name"),
+        createCell("td", member.grade, undefined, "Grade"),
+        createCell("td", member.weeklyMileageGoal, undefined, "Mileage goal"),
+        createCell("td", member.uniformTop, undefined, "Uniform top"),
+        createCell("td", member.uniformBottom, undefined, "Uniform bottom"),
       );
       body.append(row);
     });

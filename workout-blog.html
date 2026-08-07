@@ -3,15 +3,16 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Wolfpack XC workouts and coaching notes." />
+    <meta name="description" content="The latest Wolfpack XC weekly workout plan." />
     <title>Wolfpack XC | Workouts</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260807c" />
-    <script type="module" src="coach-auth.js?v=20260807b"></script>
+    <link rel="stylesheet" href="styles.css?v=20260807h" />
+    <script type="module" src="coach-auth.js?v=20260807c"></script>
+    <script src="workout-blog.js?v=20260807a" defer></script>
   </head>
-  <body class="site-auth-pending">
+  <body class="site-auth-pending athlete-workout-page">
     <header class="site-header">
       <a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a>
       <nav aria-label="Main navigation">
@@ -19,12 +20,24 @@
       </nav>
     </header>
     <main class="section-page">
-      <section class="page-hero"><p class="eyebrow">Training schedule</p><h1>Workouts</h1><p>Current training sessions, workout details, and coaching notes.</p></section>
-      <section class="tool-section workout-resources">
-        <div class="tool-section-heading"><div><p class="eyebrow">Training resources</p><h2>Workout tools</h2></div></div>
-        <div class="tool-card-grid"><a class="tool-card" href="pace-groups.html"><span class="tool-number">01</span><div class="tool-icon" aria-hidden="true">P</div><h3>Pace Groups</h3><p>View training ranges by workout intensity.</p><b>Open pace groups <span>→</span></b></a></div>
+      <section class="page-hero athlete-workout-hero">
+        <p class="eyebrow">Current training plan</p>
+        <h1>Weekly Workouts</h1>
+        <p>The latest Monday-through-Sunday plan published by the coaching staff.</p>
       </section>
-      <section class="coming-soon"><span>Team training</span><h2>Workout feed coming soon</h2><p>Published entries from the Coach Workout Log will appear here with the session goal, details, groups, and coaching notes.</p></section>
+
+      <section class="athlete-workout-section" aria-labelledby="athlete-workout-week">
+        <div class="athlete-workout-heading">
+          <div>
+            <p class="eyebrow">This week</p>
+            <h2 id="athlete-workout-week">Loading workout plan…</h2>
+            <p id="athlete-workout-updated" class="athlete-workout-updated"></p>
+          </div>
+          <a class="workout-pace-link" href="pace-groups.html">View pace groups <span aria-hidden="true">→</span></a>
+        </div>
+        <p id="athlete-workout-status" class="athlete-workout-status" role="status">Retrieving the latest plan…</p>
+        <div id="athlete-workout-days" class="athlete-workout-grid" aria-live="polite"></div>
+      </section>
     </main>
   </body>
 </html>

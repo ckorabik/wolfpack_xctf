@@ -79,13 +79,13 @@ Pages then publishes the commit normally.
 Before the first run:
 
 1. Create a Google Cloud service account and enable the Google Sheets API.
-2. Share the schedule and roster spreadsheets with the service account's email as
-   a viewer.
+2. Share the schedule, roster, and Pace Table spreadsheets with the service
+   account's email as a viewer.
 3. Add the complete service-account JSON as the repository Actions secret
    `GOOGLE_SERVICE_ACCOUNT_JSON`.
 4. If the spreadsheet IDs ever change, add Actions variables named
-   `SCHEDULE_SPREADSHEET_ID` and `ROSTER_SPREADSHEET_ID`. The current IDs are the
-   workflow defaults.
+   `SCHEDULE_SPREADSHEET_ID`, `ROSTER_SPREADSHEET_ID`, and `PACE_SPREADSHEET_ID`.
+   The current IDs are the workflow defaults.
 5. In repository **Settings → Actions → General**, allow workflows read and write
    permissions.
 
@@ -126,6 +126,10 @@ collection, using the Monday date as the document ID. The authenticated
 path; direct browser reads and writes remain denied by Firestore rules. Each
 document contains Monday-through-Sunday session details plus a supplemental
 routine checklist for each day.
+
+Authenticated team members can view the most recently saved plan on the Athlete
+Home workout page. The read-only `getLatestWorkoutPlan` callable returns the
+weekly sessions and update time without exposing the coach's email address.
 
 Firebase project setup:
 
