@@ -238,7 +238,7 @@ async function saveAttendance(data) {
 }
 
 exports.getCoachAccess = onCall(
-  { region: REGION, secrets: [coachEmailAllowlist], enforceAppCheck: false },
+  { region: REGION, secrets: [coachEmailAllowlist], enforceAppCheck: false, invoker: "public" },
   (request) => {
     const email = requireApprovedCoach(request);
     return { authorized: true, email };
@@ -246,7 +246,7 @@ exports.getCoachAccess = onCall(
 );
 
 exports.getSiteAccess = onCall(
-  { region: REGION, secrets: [siteAccessCode], enforceAppCheck: false },
+  { region: REGION, secrets: [siteAccessCode], enforceAppCheck: false, invoker: "public" },
   async (request) => {
     if (!request.auth || request.auth.token.firebase?.sign_in_provider !== "anonymous") {
       throw new HttpsError("unauthenticated", "Start a standard access session before entering the team code.");
@@ -260,7 +260,7 @@ exports.getSiteAccess = onCall(
 );
 
 exports.recordAttendance = onCall(
-  { region: REGION, secrets: [coachEmailAllowlist], enforceAppCheck: false, timeoutSeconds: 60 },
+  { region: REGION, secrets: [coachEmailAllowlist], enforceAppCheck: false, invoker: "public", timeoutSeconds: 60 },
   async (request) => {
     requireApprovedCoach(request);
     const attendance = validateAttendance(request.data);
