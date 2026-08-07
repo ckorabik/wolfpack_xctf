@@ -3,9 +3,11 @@ import {
   browserLocalPersistence,
   getAuth,
   getIdTokenResult,
+  getRedirectResult,
   GoogleAuthProvider,
   onAuthStateChanged,
   signInAnonymously,
+  signInWithRedirect,
   signInWithPopup,
   signOut,
   setPersistence,
@@ -93,6 +95,10 @@ async function coachSignIn() {
   }
 }
 
+async function coachRedirectSignIn() {
+  await signInWithRedirect(auth, provider);
+}
+
 async function standardSignIn(accessCode) {
   let user = auth.currentUser;
   if (!user?.isAnonymous) {
@@ -149,6 +155,7 @@ function createSiteGate() {
       <h1 id="site-login-title">Welcome to the Pack</h1>
       <p class="site-auth-intro">Coaches can continue with Google. Athletes and families can enter the team access code.</p>
       <button class="site-google-button" type="button" data-coach-sign-in>Coach sign-in with Google <span>→</span></button>
+      <button class="site-google-fallback" type="button" data-coach-redirect>Use full-page Google sign-in</button>
       <div class="site-auth-divider"><span>or</span></div>
       <form class="site-code-form" data-access-form>
         <label for="site-access-code">Team access code</label>
@@ -171,6 +178,7 @@ function createCoachGate() {
       <h1>Coach Login</h1>
       <p data-auth-message>Sign in with an approved coach Google account to continue.</p>
       <button class="primary-button" type="button" data-coach-sign-in>Continue with Google <span>→</span></button>
+      <button class="site-google-fallback" type="button" data-coach-redirect>Use full-page Google sign-in</button>
       <a href="index.html">Return home</a>
     </div>`;
   document.querySelector(".site-header")?.after(gate);
@@ -200,6 +208,7 @@ function wireGateActions(gate) {
   if (gate.dataset.wired) return;
   gate.dataset.wired = "true";
   const coachButton = gate.querySelector("[data-coach-sign-in]");
+  const redirectButton = gate.querySelector("[data-coach-redirect]");
   const accessForm = gate.querySelector("[data-access-form]");
   coachButton?.addEventListener("click", async () => {
     coachButton.disabled = true;
@@ -211,6 +220,16 @@ function wireGateActions(gate) {
       showGateMessage(gate, authErrorMessage(error));
     } finally {
       coachButton.disabled = false;
+    }
+  });
+  redirectButton?.addEventListener("click", async () => {
+    redirectButton.disabled = true;
+    showGateMessage(gate, "Opening Google sign-in…");
+    try {
+      await coachRedirectSignIn();
+    } catch (error) {
+      showGateMessage(gate, authErrorMessage(error));
+      redirectButton.disabled = false;
     }
   });
   accessForm?.addEventListener("submit", async (event) => {
@@ -245,6 +264,15 @@ async function initializeSiteAuthentication() {
     return;
   }
 
+  let redirectError = "";
+  try {
+    const redirectResult = await getRedirectResult(auth);
+    if (redirectResult?.user) await verifyCoach(redirectResult.user, true);
+  } catch (error) {
+    redirectError = authErrorMessage(error);
+    if (auth.currentUser) await signOut(auth);
+  }
+
   onAuthStateChanged(auth, async (user) => {
     currentCoach = null;
     if (!user) {
@@ -260,7 +288,8 @@ async function initializeSiteAuthentication() {
         }
         return;
       }
-      showSiteGate();
+      showSiteGate(redirectError);
+      redirectError = "";
       return;
     }
     try {

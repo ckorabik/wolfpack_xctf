@@ -668,6 +668,24 @@ body.site-standard a[href="coach-tools.html"] {
   color: white;
 }
 
+.site-google-fallback {
+  width: 100%;
+  margin-top: 0.65rem;
+  padding: 0.55rem;
+  border: 0;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.82rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.site-google-fallback:hover,
+.site-google-fallback:focus-visible {
+  color: var(--navy);
+}
+
 .site-auth-divider {
   display: flex;
   align-items: center;
@@ -717,6 +735,7 @@ body.site-standard a[href="coach-tools.html"] {
 }
 
 .site-google-button:disabled,
+.site-google-fallback:disabled,
 .site-code-form button:disabled {
   opacity: 0.6;
   cursor: wait;
