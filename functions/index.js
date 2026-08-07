@@ -1,5 +1,6 @@
 const { initializeApp } = require("firebase-admin/app");
 const { getAuth } = require("firebase-admin/auth");
+const { FieldValue, getFirestore } = require("firebase-admin/firestore");
 const { defineSecret } = require("firebase-functions/params");
 const { HttpsError, onCall } = require("firebase-functions/v2/https");
 const { google } = require("googleapis");
@@ -12,6 +13,21 @@ const siteAccessCode = defineSecret("SITE_ACCESS_CODE");
 const REGION = "us-central1";
 const ATTENDANCE_SPREADSHEET_ID = "1NqXh-ZTTKSjP0RnBgNUT_kCvh4PrbVRxxAMSPGPcxPY";
 const ATTENDANCE_SHEET_NAME = "XC 2026 Attendance";
+const WORKOUT_PLAN_COLLECTION = "workoutPlans";
+const workoutSupplementOptions = new Set([
+  "Mini Band Work",
+  "Core Day 1",
+  "Matthew Core",
+  "Pick-7 Core",
+  "Stretch routine",
+  "Dynamic Drills",
+  "4x Strides",
+  "Gambetta Leg Circuit",
+  "Myrtle Hip Routine",
+  "Ankle Circuit",
+  "Weight Room",
+]);
+const workoutDayNames = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
 
 const attendanceNameMap = {
   "O'Hara|Alrik S.": "Alrik Swan",
@@ -100,6 +116,56 @@ function accessCodesMatch(submittedCode) {
   const expected = Buffer.from(siteAccessCode.value().trim());
   const submitted = Buffer.from(String(submittedCode || "").trim());
   return expected.length === submitted.length && crypto.timingSafeEqual(expected, submitted);
+}
+
+function validateWorkoutWeek(value) {
+  const weekStart = String(value || "").trim();
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(weekStart)) {
+    throw new HttpsError("invalid-argument", "Choose a valid workout week.");
+  }
+  const date = new Date(`${weekStart}T00:00:00Z`);
+  if (Number.isNaN(date.getTime()) || date.getUTCDay() !== 1) {
+    throw new HttpsError("invalid-argument", "Workout weeks must start on Monday.");
+  }
+  return weekStart;
+}
+
+function validateWorkoutText(value, label, maxLength) {
+  const text = String(value || "").trim();
+  if (text.length > maxLength) throw new HttpsError("invalid-argument", `${label} is too long.`);
+  return text;
+}
+
+function validateWorkoutChecklist(value) {
+  if (!Array.isArray(value)) throw new HttpsError("invalid-argument", "Invalid workout checklist.");
+  const selections = [...new Set(value.map((item) => String(item || "").trim()).filter(Boolean))];
+  if (selections.some((item) => !workoutSupplementOptions.has(item))) {
+    throw new HttpsError("invalid-argument", "Workout checklist contains an unsupported item.");
+  }
+  return selections;
+}
+
+function validateWorkoutPlan(data) {
+  const weekStart = validateWorkoutWeek(data?.weekStart);
+  if (!Array.isArray(data?.sessions) || data.sessions.length !== workoutDayNames.length) {
+    throw new HttpsError("invalid-argument", "Submit all seven workout days.");
+  }
+  const sessions = workoutDayNames.map((day, index) => {
+    const session = data.sessions[index];
+    if (!session || String(session.day || "").toLowerCase() !== day) {
+      throw new HttpsError("invalid-argument", "Workout days are out of order.");
+    }
+    return {
+      day,
+      focus: validateWorkoutText(session.focus, `${day} session focus`, 200),
+      warmup: validateWorkoutText(session.warmup, `${day} warmup`, 2000),
+      workout: validateWorkoutText(session.workout, `${day} workout`, 4000),
+      supplemental: validateWorkoutText(session.supplemental, `${day} supplemental work`, 2000),
+      preRun: validateWorkoutChecklist(session.preRun),
+      postRun: validateWorkoutChecklist(session.postRun),
+    };
+  });
+  return { weekStart, sessions };
 }
 
 function validateAttendance(data) {
@@ -256,6 +322,37 @@ exports.getSiteAccess = onCall(
     }
     await getAuth().setCustomUserClaims(request.auth.uid, { siteAccess: true, role: "standard" });
     return { authorized: true };
+  },
+);
+
+exports.getWorkoutPlan = onCall(
+  { region: REGION, secrets: [coachEmailAllowlist], enforceAppCheck: false, invoker: "public" },
+  async (request) => {
+    requireApprovedCoach(request);
+    const weekStart = validateWorkoutWeek(request.data?.weekStart);
+    const snapshot = await getFirestore().collection(WORKOUT_PLAN_COLLECTION).doc(weekStart).get();
+    if (!snapshot.exists) return { weekStart, sessions: null };
+    const plan = snapshot.data();
+    return {
+      weekStart,
+      sessions: plan.sessions || null,
+      updatedAt: plan.updatedAt?.toDate?.().toISOString() || null,
+      updatedBy: plan.updatedBy || null,
+    };
+  },
+);
+
+exports.saveWorkoutPlan = onCall(
+  { region: REGION, secrets: [coachEmailAllowlist], enforceAppCheck: false, invoker: "public" },
+  async (request) => {
+    const email = requireApprovedCoach(request);
+    const plan = validateWorkoutPlan(request.data);
+    await getFirestore().collection(WORKOUT_PLAN_COLLECTION).doc(plan.weekStart).set({
+      ...plan,
+      updatedAt: FieldValue.serverTimestamp(),
+      updatedBy: email,
+    });
+    return { saved: true, weekStart: plan.weekStart };
   },
 );
 

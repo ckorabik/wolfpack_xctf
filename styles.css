@@ -20,6 +20,18 @@
   box-sizing: border-box;
 }
 
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 body {
   margin: 0;
   min-width: 320px;
@@ -828,6 +840,65 @@ body.site-standard a[href="coach-tools.html"] {
 
 .workout-prompt-grid .field {
   margin-bottom: 0;
+}
+
+.daily-supplement-checklist {
+  margin: 1.25rem 0 0;
+  padding: 1rem;
+  border: 1px solid var(--line);
+  background: #f8f7f5;
+}
+
+.daily-supplement-checklist > legend {
+  min-width: 0;
+  padding: 0 0.45rem;
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.checklist-heading,
+.checklist-row {
+  display: grid;
+  grid-template-columns: minmax(150px, 1fr) 52px 52px;
+  align-items: center;
+}
+
+.checklist-heading {
+  padding: 0 0.5rem 0.45rem;
+  color: var(--muted);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.checklist-heading span:not(:first-child) {
+  text-align: center;
+}
+
+.checklist-row {
+  min-height: 2.5rem;
+  padding: 0 0.5rem;
+  border-top: 1px solid #e4e0e1;
+  color: var(--ink);
+  font-size: 0.82rem;
+}
+
+.checklist-row label {
+  display: grid;
+  min-height: 2.5rem;
+  place-items: center;
+  cursor: pointer;
+}
+
+.checklist-row input {
+  width: 1.15rem;
+  height: 1.15rem;
+  margin: 0;
+  accent-color: var(--navy);
 }
 
 .weekly-workout-actions {

@@ -120,6 +120,13 @@ Attendance is written by the authenticated `recordAttendance` callable function
 to the `XC 2026 Attendance` tab. The older Apps Script endpoint remains in use
 for athlete mileage and bus-reservation submissions only.
 
+Weekly coach workout plans are stored in the Firestore `workoutPlans`
+collection, using the Monday date as the document ID. The authenticated
+`getWorkoutPlan` and `saveWorkoutPlan` callable functions are the only access
+path; direct browser reads and writes remain denied by Firestore rules. Each
+document contains Monday-through-Sunday session details plus pre-run and
+post-run routine selections.
+
 Firebase project setup:
 
 1. Enable Google and Anonymous as Authentication providers.

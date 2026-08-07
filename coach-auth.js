@@ -20,6 +20,8 @@ const GOOGLE_CLIENT_ID = "144270530422-2a27v11915le689usqer1rlqo2qi20um.apps.goo
 
 const getCoachAccess = httpsCallable(functions, "getCoachAccess");
 const getSiteAccess = httpsCallable(functions, "getSiteAccess");
+const getWorkoutPlanCall = httpsCallable(functions, "getWorkoutPlan");
+const saveWorkoutPlanCall = httpsCallable(functions, "saveWorkoutPlan");
 const recordAttendanceCall = httpsCallable(functions, "recordAttendance");
 const STANDARD_ACCESS_KEY = "wolfpack-standard-access";
 const STANDARD_ACCESS_DAYS = 30;
@@ -228,6 +230,9 @@ function revealSite(role) {
   document.body.classList.add(role === "coach" ? "site-coach" : "site-standard");
   authGate?.remove();
   authGate = null;
+  if (role === "coach" && currentCoach) {
+    document.dispatchEvent(new CustomEvent("wolfpack-coach-ready", { detail: currentCoach }));
+  }
 }
 
 function showSiteGate(message = "") {
@@ -339,6 +344,16 @@ window.WOLFPACK_AUTH = {
   async recordAttendance(payload) {
     await this.requireCoach();
     const { data } = await recordAttendanceCall(payload);
+    return data;
+  },
+  async getWorkoutPlan(weekStart) {
+    await this.requireCoach();
+    const { data } = await getWorkoutPlanCall({ weekStart });
+    return data;
+  },
+  async saveWorkoutPlan(payload) {
+    await this.requireCoach();
+    const { data } = await saveWorkoutPlanCall(payload);
     return data;
   },
 };
