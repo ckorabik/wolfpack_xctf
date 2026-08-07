@@ -55,6 +55,16 @@ function hasRememberedStandardAccess() {
   return expires > Date.now();
 }
 
+function forgetStandardAccess() {
+  try {
+    window.localStorage.removeItem(STANDARD_ACCESS_KEY);
+  } catch {}
+  document.cookie = `${STANDARD_ACCESS_KEY}=; Max-Age=0; Path=/; SameSite=Lax`;
+  if (location.hostname === "wolfpack-xctf.com" || location.hostname.endsWith(".wolfpack-xctf.com")) {
+    document.cookie = `${STANDARD_ACCESS_KEY}=; Max-Age=0; Path=/; Domain=wolfpack-xctf.com; SameSite=Lax; Secure`;
+  }
+}
+
 async function verifyCoach(user, force = false) {
   if (!user || user.isAnonymous) return null;
   if (!force && accessCheck?.uid === user.uid) return accessCheck.promise;
@@ -105,19 +115,17 @@ async function standardSignIn(accessCode) {
 function createHeaderControl(header) {
   const button = document.createElement("button");
   button.type = "button";
-  button.className = "coach-auth-control";
-  button.textContent = "Coach Login";
-  button.setAttribute("aria-label", "Sign in to Coach Utilities");
+  button.className = "site-auth-control";
+  button.textContent = "Log Out";
+  button.setAttribute("aria-label", "Log out of Wolfpack XC");
   button.addEventListener("click", async () => {
     button.disabled = true;
     try {
-      if (currentCoach) {
-        await signOut(auth);
-        window.location.href = "index.html";
-      } else {
-        await coachSignIn();
-        window.location.href = "coach-tools.html";
-      }
+      forgetStandardAccess();
+      currentCoach = null;
+      accessCheck = null;
+      if (auth.currentUser) await signOut(auth);
+      window.location.href = "index.html";
     } catch (error) {
       window.alert(authErrorMessage(error));
     } finally {
@@ -240,7 +248,7 @@ async function initializeSiteAuthentication() {
   onAuthStateChanged(auth, async (user) => {
     currentCoach = null;
     if (!user) {
-      if (headerButton) headerButton.textContent = "Coach Login";
+      if (headerButton) headerButton.textContent = "Log Out";
       if (rememberedStandardAccess) {
         if (coachOnly) {
           document.body.classList.remove("site-auth-pending");
@@ -282,7 +290,7 @@ async function initializeSiteAuthentication() {
         wireGateActions(authGate);
         return;
       }
-      if (headerButton) headerButton.textContent = "Coach Login";
+      if (headerButton) headerButton.textContent = "Log Out";
       revealSite("standard");
     } catch (error) {
       if (!user.isAnonymous) await signOut(auth);

@@ -564,7 +564,7 @@ textarea:focus {
   background: var(--red);
 }
 
-.coach-auth-control {
+.site-auth-control {
   min-width: max-content;
   min-height: 2.45rem;
   padding: 0 1rem;
@@ -578,13 +578,13 @@ textarea:focus {
   white-space: nowrap;
 }
 
-.coach-auth-control:hover,
-.coach-auth-control:focus-visible {
+.site-auth-control:hover,
+.site-auth-control:focus-visible {
   background: var(--red);
   color: var(--navy);
 }
 
-.coach-auth-control:disabled {
+.site-auth-control:disabled {
   opacity: 0.6;
   cursor: wait;
 }
@@ -595,8 +595,7 @@ body.coach-auth-pending > main {
   visibility: hidden;
 }
 
-body.site-standard a[href="coach-tools.html"],
-body.site-standard .coach-auth-control {
+body.site-standard a[href="coach-tools.html"] {
   display: none !important;
 }
 
@@ -2310,7 +2309,7 @@ footer span:first-child {
     margin: 0 1rem 0.65rem;
   }
 
-  .coach-auth-control {
+  .site-auth-control {
     position: absolute;
     top: 0.7rem;
     right: 1rem;
