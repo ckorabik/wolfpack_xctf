@@ -17,7 +17,7 @@ function eventMarkup(event) {
   return `
     <li>
       <div class="date-block"><strong>${event.date.getDate()}</strong><span>${month}</span></div>
-      <div><h4>${event.title}</h4><p>${event.details || "Details coming soon"}</p></div>
+      <div class="upcoming-event-copy"><h2 class="upcoming-event-title">${event.title}</h2><p class="upcoming-event-details">${event.details || "Details coming soon"}</p></div>
     </li>
   `;
 }

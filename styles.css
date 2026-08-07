@@ -1155,12 +1155,33 @@ body.site-standard a[href="coach-tools.html"] {
   text-transform: uppercase;
 }
 
-.upcoming-events-list h4 {
+.upcoming-event-copy {
+  display: grid;
+  width: 100%;
+  flex: 1;
+  grid-template-rows: minmax(3.4rem, auto) 1fr;
+  align-content: end;
   margin-top: 1.4rem;
+}
+
+.upcoming-events-list .upcoming-event-title {
+  margin: 0 0 0.65rem;
   color: var(--navy);
   font-family: "Oswald", sans-serif;
   font-size: 1.35rem;
+  font-weight: 600;
+  line-height: 1.18;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
+}
+
+.upcoming-events-list .upcoming-event-details {
+  margin: 0;
+  color: var(--muted);
+  font-family: "DM Sans", sans-serif;
+  font-size: 0.86rem;
+  font-weight: 400;
+  line-height: 1.55;
 }
 
 .upcoming-events-status {
