@@ -1,4 +1,5 @@
 const DAYS = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const SEASON_START = new Date(2026, 7, 10);
 
 const weekHeading = document.querySelector("#athlete-workout-week");
 const updatedLabel = document.querySelector("#athlete-workout-updated");
@@ -81,8 +82,9 @@ function renderDay(session, date, index) {
 }
 
 function renderPlan(plan) {
-  const start = parseLocalDate(plan?.weekStart);
-  if (!start) throw new Error("The latest workout plan does not have a valid week date.");
+  const savedStart = parseLocalDate(plan?.weekStart);
+  if (!savedStart) throw new Error("The latest workout plan does not have a valid week date.");
+  const start = savedStart < SEASON_START ? new Date(SEASON_START) : savedStart;
 
   weekHeading.textContent = formatWeek(start);
   if (plan.updatedAt) {

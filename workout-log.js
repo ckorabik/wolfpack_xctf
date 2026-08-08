@@ -8,6 +8,7 @@ const prepopulateNextButton = document.querySelector("#prepopulate-next-workout"
 const saveButton = form.querySelector("button[type='submit']");
 const saveStatus = document.querySelector("#workout-save-status");
 const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+const seasonStart = new Date(2026, 7, 10);
 const supplementalOptions = [
   "Mini Band Work",
   "Core Day 1",
@@ -237,7 +238,8 @@ async function clearPlan() {
   if (await savePlan()) saveStatus.textContent = "The shared workout plan for this week was cleared.";
 }
 
-weekInput.value = localDateValue(mondayFor(new Date()));
+const defaultWeek = mondayFor(new Date());
+weekInput.value = localDateValue(defaultWeek < seasonStart ? seasonStart : defaultWeek);
 weekInput.addEventListener("change", selectWeek);
 form.addEventListener("submit", savePlan);
 copyPreviousButton.addEventListener("click", copyPreviousPlan);
