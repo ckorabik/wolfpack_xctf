@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import html
+import hashlib
 import json
 import os
 import re
@@ -241,6 +242,14 @@ def update_roster(service, spreadsheet_id: str) -> None:
     if count != 1:
         raise RuntimeError("Could not locate rosterData in roster.js.")
     path.write_text(updated, encoding="utf-8", newline="\n")
+
+    version = hashlib.sha256(roster.encode("utf-8")).hexdigest()[:10]
+    page_path = ROOT / "roster.html"
+    page = page_path.read_text(encoding="utf-8")
+    page, count = re.subn(r"roster\.js\?v=[a-zA-Z0-9_-]+", f"roster.js?v={version}", page, count=1)
+    if count != 1:
+        raise RuntimeError("Could not locate the roster.js cache version in roster.html.")
+    page_path.write_text(page, encoding="utf-8", newline="\n")
 
 
 def update_pace_table(service, spreadsheet_id: str) -> None:

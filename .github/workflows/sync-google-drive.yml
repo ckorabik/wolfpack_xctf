@@ -67,7 +67,7 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add schedule.html roster.js pace-table-data.js records.js history.html team-insights-data.js
+          git add schedule.html roster.html roster.js pace-table-data.js records.js history.html team-insights-data.js
           git commit -m "Sync website data from Google Drive"
           git pull --rebase origin main
           git push
