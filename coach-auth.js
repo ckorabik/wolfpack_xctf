@@ -32,6 +32,22 @@ let accessCheck = null;
 let authGate = null;
 let googleIdentityPromise = null;
 
+function ensureResultsNavigation() {
+  document.querySelectorAll('.site-header nav').forEach((navigation) => {
+    if (navigation.querySelector('a[href="results-rankings.html"]')) return;
+    const recordsLink = navigation.querySelector('a[href="records.html"]');
+    if (!recordsLink) return;
+    const link = document.createElement("a");
+    link.href = "results-rankings.html";
+    link.textContent = "Results & Rankings";
+    if (location.pathname.endsWith("/results-rankings.html")) {
+      link.classList.add("active");
+      link.setAttribute("aria-current", "page");
+    }
+    recordsLink.after(link);
+  });
+}
+
 function authErrorMessage(error) {
   if (error?.code === "auth/unauthorized-domain") return "Google sign-in is not authorized for this website domain.";
   if (error?.code === "functions/permission-denied") return error.message || "That account or access code is not approved.";
@@ -372,7 +388,11 @@ window.WOLFPACK_AUTH = {
 };
 
 if (document.readyState === "loading") {
-  document.addEventListener("DOMContentLoaded", initializeSiteAuthentication, { once: true });
+  document.addEventListener("DOMContentLoaded", () => {
+    ensureResultsNavigation();
+    initializeSiteAuthentication();
+  }, { once: true });
 } else {
+  ensureResultsNavigation();
   initializeSiteAuthentication();
 }
