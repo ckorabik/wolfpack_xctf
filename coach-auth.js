@@ -24,6 +24,7 @@ const getLatestWorkoutPlanCall = httpsCallable(functions, "getLatestWorkoutPlan"
 const getWorkoutPlanCall = httpsCallable(functions, "getWorkoutPlan");
 const saveWorkoutPlanCall = httpsCallable(functions, "saveWorkoutPlan");
 const recordAttendanceCall = httpsCallable(functions, "recordAttendance");
+const syncGoogleDriveCall = httpsCallable(functions, "syncGoogleDrive");
 const STANDARD_ACCESS_KEY = "wolfpack-standard-access";
 const STANDARD_ACCESS_DAYS = 30;
 let currentCoach = null;
@@ -346,6 +347,11 @@ window.WOLFPACK_AUTH = {
   async recordAttendance(payload) {
     await this.requireCoach();
     const { data } = await recordAttendanceCall(payload);
+    return data;
+  },
+  async syncGoogleDrive() {
+    await this.requireCoach();
+    const { data } = await syncGoogleDriveCall();
     return data;
   },
   async getWorkoutPlan(weekStart) {

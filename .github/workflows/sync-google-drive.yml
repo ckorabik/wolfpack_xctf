@@ -37,6 +37,9 @@ jobs:
           SCHEDULE_SPREADSHEET_ID: ${{ vars.SCHEDULE_SPREADSHEET_ID || '19gePPoZ1uYQoIN2wbQ_1B5hOrCZtNCpC2oKx0Mxaad0' }}
           ROSTER_SPREADSHEET_ID: ${{ vars.ROSTER_SPREADSHEET_ID || '1NdQhlH_nHeRzazzJbt2AIiRyicnYyNNk-VSgOVsGunY' }}
           PACE_SPREADSHEET_ID: ${{ vars.PACE_SPREADSHEET_ID || '1Gce5YjTi014GzgxWwBCdqDXgKBx2eMftn6zt4EvhoDM' }}
+          HISTORY_SPREADSHEET_ID: ${{ vars.HISTORY_SPREADSHEET_ID || '1_eRgMFfTFQWpwbzerPFSSyiHAVi1WgfYX8BlhDeChKs' }}
+          MILEAGE_SPREADSHEET_ID: ${{ vars.MILEAGE_SPREADSHEET_ID || '1cL0OWH-aiRr1MuKQYq3Dfm9AqWar37THlSbWoJDgnws' }}
+          BUS_SPREADSHEET_ID: ${{ vars.BUS_SPREADSHEET_ID || '1zsWKNcIsKxRdjNmGhGsO_Nx9v3OPcwqJzn8v79Mojb4' }}
         run: python scripts/sync_google_drive.py
 
       - name: Show generated changes
@@ -64,6 +67,6 @@ jobs:
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add schedule.html roster.js pace-table-data.js
+          git add schedule.html roster.js pace-table-data.js records.js history.html team-insights-data.js
           git commit -m "Sync website data from Google Drive"
           git push

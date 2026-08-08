@@ -78,18 +78,20 @@ submissions without giving athletes access to view or edit the spreadsheet.
 
 The Coach Utilities page links authorized repository collaborators to the
 `Sync website with Google Drive` GitHub Actions workflow. The workflow regenerates
-the public schedule and roster snapshots and commits changes to `main`; GitHub
+the public schedule, roster, pace table, records, history, mileage, and bus
+reservation snapshots and commits changes to `main`; GitHub
 Pages then publishes the commit normally.
 
 Before the first run:
 
 1. Create a Google Cloud service account and enable the Google Sheets API.
-2. Share the schedule, roster, and Pace Table spreadsheets with the service
+2. Share all source spreadsheets with the service
    account's email as a viewer.
 3. Add the complete service-account JSON as the repository Actions secret
    `GOOGLE_SERVICE_ACCOUNT_JSON`.
 4. If the spreadsheet IDs ever change, add Actions variables named
-   `SCHEDULE_SPREADSHEET_ID`, `ROSTER_SPREADSHEET_ID`, and `PACE_SPREADSHEET_ID`.
+   `SCHEDULE_SPREADSHEET_ID`, `ROSTER_SPREADSHEET_ID`, `PACE_SPREADSHEET_ID`,
+   `HISTORY_SPREADSHEET_ID`, `MILEAGE_SPREADSHEET_ID`, and `BUS_SPREADSHEET_ID`.
    The current IDs are the workflow defaults.
 5. In repository **Settings → Actions → General**, allow workflows read and write
    permissions.
@@ -97,6 +99,12 @@ Before the first run:
 Run the workflow with **Preview changes without publishing** enabled to download
 a patch without changing the website. Disable preview to commit and publish the
 generated snapshots.
+
+Approved coaches can also start the publishing workflow directly from Coach
+Utilities. Create a fine-grained GitHub token with Actions read/write access to
+`ckorabik/wolfpack_xctf`, store it as the Firebase secret `GITHUB_ACTIONS_TOKEN`,
+and deploy `functions:syncGoogleDrive`. The credential remains server-side and
+is never sent to the browser.
 
 ## Site and coach authentication
 

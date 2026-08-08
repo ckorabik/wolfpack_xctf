@@ -3170,6 +3170,50 @@ footer span:first-child {
   background: #f3efe9;
 }
 
+button.tool-card {
+  width: 100%;
+  border-top: 0;
+  border-left: 0;
+  background: white;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+button.tool-card:disabled {
+  cursor: wait;
+  opacity: 0.78;
+}
+
+.tool-card-title {
+  color: var(--navy);
+  font-family: "Oswald", sans-serif;
+  font-size: 1.75rem;
+  font-weight: 600;
+}
+
+.tool-card-description {
+  margin: 0.7rem 0 1.5rem;
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.sync-tool-card small {
+  min-height: 2.6em;
+  margin-top: 0.75rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+  line-height: 1.3;
+}
+
+.insights-page { display: grid; gap: 1.5rem; }
+.insights-section { padding: clamp(1rem, 3vw, 2rem); border: 1px solid var(--line); border-radius: 18px; background: var(--surface); }
+.insights-table-wrap { overflow-x: auto; margin-top: 1rem; }
+.insights-table-wrap table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.insights-table-wrap th, .insights-table-wrap td { padding: 0.7rem 0.8rem; border: 1px solid var(--line); text-align: left; white-space: nowrap; }
+.insights-table-wrap th { background: var(--navy); color: white; font-family: "Oswald", sans-serif; letter-spacing: 0.03em; }
+.insights-table-wrap tbody tr:nth-child(even) { background: #f7f4f5; }
+
 .athlete-workout-hero {
   padding-bottom: 2.5rem;
 }

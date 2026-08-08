@@ -19,6 +19,10 @@ SCOPES = ["https://www.googleapis.com/auth/spreadsheets.readonly"]
 SCHEDULE_TABS = ("Meets", "Other Events")
 ROSTER_TAB = "Full Team Roster"
 PACE_TAB = "Pace Table"
+RECORDS_TAB = "Peoria Top 50"
+HISTORY_TAB = "Team Timeline"
+MILEAGE_TAB = "Mileage Log"
+BUS_TAB = "Sheet1"
 
 
 def google_sheets_service():
@@ -262,6 +266,67 @@ def update_pace_table(service, spreadsheet_id: str) -> None:
     (ROOT / "pace-table-data.js").write_text(javascript, encoding="utf-8", newline="\n")
 
 
+def update_records(service, spreadsheet_id: str) -> None:
+    rows = read_tab(service, spreadsheet_id, RECORDS_TAB, formatted=True)
+    categories = {"varsity": [], "sophomores": [], "freshmen": []}
+    for row in rows[4:]:
+        values = [text(value) for value in (row + [""] * 12)[:12]]
+        for category, start in (("varsity", 0), ("sophomores", 4), ("freshmen", 8)):
+            rank, name, pace, year = values[start : start + 4]
+            if rank and name and pace:
+                categories[category].append("|".join((rank, name.replace("|", "/"), pace, year)))
+    if any(not values for values in categories.values()):
+        raise RuntimeError("The Peoria Top 50 tab is missing a record category.")
+    blocks = ",\n".join(
+        f"  {category}: `\n" + "\n".join(values) + "`"
+        for category, values in categories.items()
+    )
+    path = ROOT / "records.js"
+    source = path.read_text(encoding="utf-8")
+    updated, count = re.subn(
+        r"const recordData = \{.*?\n\};", f"const recordData = {{\n{blocks},\n}};",
+        source, count=1, flags=re.DOTALL,
+    )
+    if count != 1:
+        raise RuntimeError("Could not locate recordData in records.js.")
+    path.write_text(updated, encoding="utf-8", newline="\n")
+
+
+def update_history(service, spreadsheet_id: str) -> None:
+    rows = read_tab(service, spreadsheet_id, HISTORY_TAB, formatted=True)
+    output = []
+    milestone_words = ("champion", "trophy", "world record", "break 4:00", "qualif")
+    for row in rows[1:]:
+        year = text(row[0] if row else "")
+        event = text(row[1] if len(row) > 1 else "")
+        if not year or not event:
+            continue
+        classes = "timeline-item milestone" if any(word in event.lower() for word in milestone_words) else "timeline-item"
+        output.append(
+            f'            <article class="{classes}"><div class="timeline-year">'
+            f'{escape(year.replace("-", "–"))}</div><div class="timeline-dot"></div>'
+            f'<div class="timeline-card"><p>{escape(event)}</p></div></article>'
+        )
+    if not output:
+        raise RuntimeError("The Team Timeline tab did not contain usable entries.")
+    path = ROOT / "history.html"
+    source = path.read_text(encoding="utf-8")
+    source = replace_between(source, r'<div id="team-timeline" class="timeline">', r"</div>\n\s*</div>", "\n".join(output))
+    path.write_text(source, encoding="utf-8", newline="\n")
+
+
+def update_public_insights(service, mileage_id: str, bus_id: str) -> None:
+    mileage = read_tab(service, mileage_id, MILEAGE_TAB, formatted=True)
+    bus = read_tab(service, bus_id, BUS_TAB, formatted=True)
+    if not mileage or not bus:
+        raise RuntimeError("Mileage or bus reservation headers could not be read.")
+    payload = {"mileage": mileage, "busReservations": bus}
+    javascript = "window.WOLFPACK_TEAM_INSIGHTS = " + json.dumps(
+        payload, ensure_ascii=False, indent=2
+    ) + ";\n"
+    (ROOT / "team-insights-data.js").write_text(javascript, encoding="utf-8", newline="\n")
+
+
 def required_environment(name: str) -> str:
     value = os.environ.get(name, "").strip()
     if not value:
@@ -274,7 +339,15 @@ def main() -> None:
     update_schedule(service, required_environment("SCHEDULE_SPREADSHEET_ID"))
     update_roster(service, required_environment("ROSTER_SPREADSHEET_ID"))
     update_pace_table(service, required_environment("PACE_SPREADSHEET_ID"))
-    print("Updated schedule.html, roster.js, and pace-table-data.js from Google Sheets.")
+    history_id = required_environment("HISTORY_SPREADSHEET_ID")
+    update_records(service, history_id)
+    update_history(service, history_id)
+    update_public_insights(
+        service,
+        required_environment("MILEAGE_SPREADSHEET_ID"),
+        required_environment("BUS_SPREADSHEET_ID"),
+    )
+    print("Updated all seven website tables from Google Sheets.")
 
 
 if __name__ == "__main__":

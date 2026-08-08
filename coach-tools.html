@@ -8,8 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260807c" />
-    <script type="module" src="coach-auth.js?v=20260807c"></script>
+    <link rel="stylesheet" href="styles.css?v=20260808b" />
+    <script type="module" src="coach-auth.js?v=20260808a"></script>
+    <script src="coach-tools.js?v=20260808a" defer></script>
   </head>
   <body class="site-auth-pending coach-auth-pending" data-coach-only>
     <header class="site-header">
@@ -32,7 +33,8 @@
         <div class="tool-card-grid">
           <a class="tool-card" href="attendance.html"><span class="tool-number">01</span><div class="tool-icon" aria-hidden="true">✓</div><h3>Attendance</h3><p>Track practice attendance, planned absences, and athlete availability.</p><b>Open attendance <span>→</span></b></a>
           <a class="tool-card featured-tool" href="workout-log.html"><span class="tool-number">02</span><div class="tool-icon" aria-hidden="true">W</div><h3>Workout Log</h3><p>Draft team sessions that will feed the public Workouts page.</p><b>Open workout log <span>→</span></b></a>
-          <a class="tool-card" href="https://github.com/ckorabik/wolfpack_xctf/actions/workflows/sync-google-drive.yml" target="_blank" rel="noopener"><span class="tool-number">03</span><div class="tool-icon" aria-hidden="true">↻</div><h3>Sync with Google Drive</h3><p>Refresh the website schedule and roster from the coaching spreadsheets.</p><b>Open secure sync <span>→</span></b></a>
+          <a class="tool-card" href="team-insights.html"><span class="tool-number">03</span><div class="tool-icon" aria-hidden="true">D</div><h3>Team Insights</h3><p>Review the public mileage log and bus reservation tables.</p><b>Open insights <span>→</span></b></a>
+          <button class="tool-card sync-tool-card" id="sync-google-drive" type="button"><span class="tool-number">04</span><span class="tool-icon" aria-hidden="true">↻</span><span class="tool-card-title">Sync with Google Drive</span><span class="tool-card-description">Refresh all seven website tables from Google Drive.</span><b>Start secure sync <span>→</span></b><small id="sync-google-drive-status" role="status" aria-live="polite"></small></button>
         </div>
       </section>
     </main>

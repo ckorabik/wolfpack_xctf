@@ -10,7 +10,9 @@ initializeApp();
 
 const coachEmailAllowlist = defineSecret("COACH_EMAIL_ALLOWLIST");
 const siteAccessCode = defineSecret("SITE_ACCESS_CODE");
+const githubActionsToken = defineSecret("GITHUB_ACTIONS_TOKEN");
 const REGION = "us-central1";
+const GITHUB_SYNC_URL = "https://api.github.com/repos/ckorabik/wolfpack_xctf/actions/workflows/sync-google-drive.yml/dispatches";
 const ATTENDANCE_SPREADSHEET_ID = "1NqXh-ZTTKSjP0RnBgNUT_kCvh4PrbVRxxAMSPGPcxPY";
 const ATTENDANCE_SHEET_NAME = "XC 2026 Attendance";
 const WORKOUT_PLAN_COLLECTION = "workoutPlans";
@@ -394,5 +396,32 @@ exports.recordAttendance = onCall(
       if (error instanceof HttpsError) throw error;
       throw new HttpsError("internal", "Attendance could not be saved. Try again or contact the site administrator.");
     }
+  },
+);
+
+exports.syncGoogleDrive = onCall(
+  { region: REGION, secrets: [coachEmailAllowlist, githubActionsToken], enforceAppCheck: false, invoker: "public" },
+  async (request) => {
+    const email = requireApprovedCoach(request);
+    const response = await fetch(GITHUB_SYNC_URL, {
+      method: "POST",
+      headers: {
+        Accept: "application/vnd.github+json",
+        Authorization: `Bearer ${githubActionsToken.value()}`,
+        "Content-Type": "application/json",
+        "User-Agent": "wolfpack-xctf-firebase",
+        "X-GitHub-Api-Version": "2022-11-28",
+      },
+      body: JSON.stringify({ ref: "main", inputs: { preview_only: "false" } }),
+    });
+
+    if (response.status !== 204) {
+      const detail = (await response.text()).slice(0, 500);
+      console.error("Google Drive sync dispatch failed", { status: response.status, detail, requestedBy: email });
+      throw new HttpsError("internal", "The website sync could not be started. Contact the site administrator.");
+    }
+
+    console.info("Google Drive sync dispatched", { requestedBy: email });
+    return { started: true };
   },
 );
