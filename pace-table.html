@@ -8,9 +8,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css?v=20260807e" />
+    <link rel="stylesheet" href="styles.css?v=20260807h" />
     <script src="pace-table-data.js?v=20260807a" defer></script>
-    <script src="pace-table.js?v=20260807a" defer></script>
+    <script src="pace-table.js?v=20260807b" defer></script>
     <script type="module" src="coach-auth.js?v=20260807c"></script>
   </head>
   <body class="site-auth-pending">
@@ -24,6 +24,11 @@
           <div class="pace-time-entry"><label for="pace-time">Estimated time</label><div><input id="pace-time" name="time" type="text" inputmode="decimal" autocomplete="off" required /><button type="submit">Show paces <span>→</span></button></div><small id="pace-input-hint"></small><p id="pace-error" class="error" role="alert"></p></div>
         </form>
         <section id="pace-result" class="pace-result" aria-live="polite" hidden><p class="eyebrow">Suggested row</p><h2 id="pace-result-heading"></h2><p id="pace-rounding-note" class="pace-rounding-note"></p><div id="pace-result-grid" class="pace-result-grid"></div><div class="pace-safety-note"><strong>Surface adjustment</strong><p>Add 1–2 seconds to mile repetitions and 2 seconds per 400 meters for 3200/3-mile work when running on grass. Paces are guidance; follow the workout your coach assigns.</p></div></section>
+        <section class="pace-full-table-section" aria-labelledby="pace-full-table-heading">
+          <div class="pace-full-table-heading"><div><p class="eyebrow">All training paces</p><h2 id="pace-full-table-heading">Full pace table</h2></div><p>Enter an estimated time above to highlight the faster and slower rows surrounding your current fitness.</p></div>
+          <div class="pace-full-table-wrap" tabindex="0" aria-label="Scrollable full training pace table"><table class="pace-full-table"><thead><tr><th scope="col">3 mile</th><th scope="col">1600</th><th scope="col">VDOT</th><th scope="col">Mile / 200</th><th scope="col">Mile / 300</th><th scope="col">3200 / 400</th><th scope="col">3 mile / 400</th><th scope="col">Critical / 800</th><th scope="col">Threshold / mile</th><th scope="col">Marathon / mile</th></tr></thead><tbody id="pace-full-table-body"></tbody></table></div>
+          <p id="pace-table-highlight-note" class="pace-table-highlight-note" aria-live="polite">Submit an estimated time to highlight your surrounding rows.</p>
+        </section>
         <p class="pace-source">Static snapshot from the <a href="https://docs.google.com/spreadsheets/d/1Gce5YjTi014GzgxWwBCdqDXgKBx2eMftn6zt4EvhoDM" target="_blank" rel="noopener">Pace Table Google Sheet</a>.</p>
       </section>
     </main>

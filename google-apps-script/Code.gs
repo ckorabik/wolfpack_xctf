@@ -1,6 +1,7 @@
 const SHEET_NAME = "Mileage Log";
-const BUS_SHEET_NAME = "Bus Reservations";
+const BUS_SHEET_NAME = "Sheet1";
 const SPREADSHEET_ID = "1cL0OWH-aiRr1MuKQYq3Dfm9AqWar37THlSbWoJDgnws";
+const BUS_SPREADSHEET_ID = "1zsWKNcIsKxRdjNmGhGsO_Nx9v3OPcwqJzn8v79Mojb4";
 const ATTENDANCE_SPREADSHEET_ID = "1NqXh-ZTTKSjP0RnBgNUT_kCvh4PrbVRxxAMSPGPcxPY";
 const ATTENDANCE_SHEET_NAME = "XC 2026 Attendance";
 const TIME_ZONE = "America/Chicago";
@@ -115,9 +116,8 @@ function saveBusReservation_(data) {
   validateBusReservation_(data);
   const sheet = getBusReservationSheet_();
   sheet.appendRow([
-    new Date(),
-    clean_(data.riderName),
     clean_(data.event),
+    clean_(data.riderName),
     clean_(data.takingBus),
   ]);
 }
@@ -193,17 +193,9 @@ function getMileageSheet_() {
 }
 
 function getBusReservationSheet_() {
-  const spreadsheet = SpreadsheetApp.openById(SPREADSHEET_ID);
-  let sheet = spreadsheet.getSheetByName(BUS_SHEET_NAME);
-
-  if (!sheet) {
-    sheet = spreadsheet.insertSheet(BUS_SHEET_NAME);
-    sheet.appendRow(["Submitted At", "Rider Name", "Event", "Taking Bus"]);
-    sheet.setFrozenRows(1);
-    sheet.getRange(1, 1, 1, 4).setFontWeight("bold");
-    sheet.autoResizeColumns(1, 4);
-  }
-
+  const spreadsheet = SpreadsheetApp.openById(BUS_SPREADSHEET_ID);
+  const sheet = spreadsheet.getSheetByName(BUS_SHEET_NAME);
+  if (!sheet) throw new Error("The bus reservations sheet could not be found.");
   return sheet;
 }
 

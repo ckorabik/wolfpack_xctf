@@ -3,6 +3,8 @@ const weekInput = document.querySelector("#workout-week");
 const weekRange = document.querySelector("#workout-week-range");
 const daysContainer = document.querySelector("#weekly-workout-days");
 const clearButton = document.querySelector("#clear-workout-draft");
+const copyPreviousButton = document.querySelector("#copy-previous-workout");
+const prepopulateNextButton = document.querySelector("#prepopulate-next-workout");
 const saveButton = form.querySelector("button[type='submit']");
 const saveStatus = document.querySelector("#workout-save-status");
 const dayNames = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
@@ -102,6 +104,17 @@ function collectPlan() {
   };
 }
 
+function planHasContent(plan) {
+  return plan.sessions.some((session) => session.focus || session.workout || session.supplementalItems.length);
+}
+
+function setActionButtonsDisabled(disabled) {
+  saveButton.disabled = disabled;
+  copyPreviousButton.disabled = disabled;
+  prepopulateNextButton.disabled = disabled;
+  clearButton.disabled = disabled;
+}
+
 function populatePlan(sessions) {
   if (!Array.isArray(sessions)) return;
   sessions.forEach((session) => {
@@ -124,8 +137,7 @@ function populatePlan(sessions) {
 async function loadPlan() {
   const sequence = ++loadSequence;
   saveStatus.textContent = "Loading this week from Firebase…";
-  saveButton.disabled = true;
-  clearButton.disabled = true;
+  setActionButtonsDisabled(true);
   try {
     const api = await coachApi();
     const plan = await api.getWorkoutPlan(weekInput.value);
@@ -141,8 +153,7 @@ async function loadPlan() {
     if (sequence === loadSequence) saveStatus.textContent = error?.message || "This workout plan could not be loaded.";
   } finally {
     if (sequence === loadSequence) {
-      saveButton.disabled = false;
-      clearButton.disabled = false;
+      setActionButtonsDisabled(false);
     }
   }
 }
@@ -155,8 +166,7 @@ async function selectWeek() {
 
 async function savePlan(event) {
   event?.preventDefault();
-  saveButton.disabled = true;
-  clearButton.disabled = true;
+  setActionButtonsDisabled(true);
   saveStatus.textContent = "Saving the shared plan to Firebase…";
   try {
     const api = await coachApi();
@@ -167,8 +177,57 @@ async function savePlan(event) {
     saveStatus.textContent = error?.message || "The workout plan could not be saved.";
     return false;
   } finally {
-    saveButton.disabled = false;
-    clearButton.disabled = false;
+    setActionButtonsDisabled(false);
+  }
+}
+
+async function copyPreviousPlan() {
+  if (planHasContent(collectPlan()) && !window.confirm("Replace the current form with the previous week's workout plan?")) return;
+
+  const previousMonday = parseLocalDate(weekInput.value);
+  previousMonday.setDate(previousMonday.getDate() - 7);
+  const previousWeekStart = localDateValue(previousMonday);
+  setActionButtonsDisabled(true);
+  saveStatus.textContent = "Loading the previous week's plan from Firebase…";
+  try {
+    const api = await coachApi();
+    const plan = await api.getWorkoutPlan(previousWeekStart);
+    if (!plan.sessions) {
+      saveStatus.textContent = `No shared plan was saved for the week of ${formatDate(previousMonday)}.`;
+      return;
+    }
+    renderWeek();
+    populatePlan(plan.sessions);
+    saveStatus.textContent = `Previous week's plan copied from ${formatDate(previousMonday)}. Review it, then save this week when ready.`;
+  } catch (error) {
+    saveStatus.textContent = error?.message || "The previous week's workout plan could not be loaded.";
+  } finally {
+    setActionButtonsDisabled(false);
+  }
+}
+
+async function prepopulateNextPlan() {
+  const currentPlan = collectPlan();
+  if (!planHasContent(currentPlan)) {
+    saveStatus.textContent = "Add at least one workout field before pre-populating next week.";
+    return;
+  }
+
+  const nextMonday = parseLocalDate(weekInput.value);
+  nextMonday.setDate(nextMonday.getDate() + 7);
+  const nextWeekStart = localDateValue(nextMonday);
+  setActionButtonsDisabled(true);
+  saveStatus.textContent = "Checking next week's shared plan...";
+  try {
+    const api = await coachApi();
+    const existingPlan = await api.getWorkoutPlan(nextWeekStart);
+    if (existingPlan.sessions && !window.confirm("Next week already has a shared plan. Replace it with the fields currently shown?")) return;
+    await api.saveWorkoutPlan({ ...currentPlan, weekStart: nextWeekStart });
+    saveStatus.textContent = `Next week (${formatDate(nextMonday)}) was pre-populated. Select that week to review or edit it.`;
+  } catch (error) {
+    saveStatus.textContent = error?.message || "Next week's workout plan could not be pre-populated.";
+  } finally {
+    setActionButtonsDisabled(false);
   }
 }
 
@@ -181,6 +240,8 @@ async function clearPlan() {
 weekInput.value = localDateValue(mondayFor(new Date()));
 weekInput.addEventListener("change", selectWeek);
 form.addEventListener("submit", savePlan);
+copyPreviousButton.addEventListener("click", copyPreviousPlan);
+prepopulateNextButton.addEventListener("click", prepopulateNextPlan);
 clearButton.addEventListener("click", clearPlan);
 renderWeek();
 loadPlan();

@@ -7,12 +7,12 @@
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Oswald:wght@500;600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="styles.css?v=20260807g" />
     <script type="module" src="coach-auth.js?v=20260807c"></script>
-    <script src="workout-log.js?v=20260807b" defer></script>
+    <script src="workout-log.js?v=20260807d" defer></script>
   </head>
   <body class="site-auth-pending coach-auth-pending" data-coach-only>
     <header class="site-header"><a class="brand" href="index.html"><span class="brand-mark">W</span><span>Wolfpack XC</span></a><nav aria-label="Main navigation"><a href="index.html">Home</a><a href="schedule.html">Schedule</a><a href="athlete-utilities.html">Athlete Home</a><a class="active" aria-current="page" href="coach-tools.html">Coach Utilities</a><a href="records.html">Records</a><a href="history.html">History</a><a href="roster.html">Roster</a></nav></header>
     <main class="tool-form-page">
-      <section class="tool-form-intro"><a href="coach-tools.html">â† Back to Coach Utilities</a><p class="eyebrow">Weekly training planner</p><h1>Workout Log</h1><p>Build the team plan from Monday through Sunday. Add the main workout, then select the routines that belong in the supplemental section.</p><div class="tool-notice"><strong>Shared Firebase plan</strong><span>Approved coaches load and update the same weekly plan. The most recent save becomes the current coaching plan.</span></div></section>
+      <section class="tool-form-intro"><a href="coach-tools.html">&larr; Back to Coach Utilities</a><p class="eyebrow">Weekly training planner</p><h1>Workout Log</h1><p>Build the team plan from Monday through Sunday. Add the main workout, then select the routines that belong in the supplemental section.</p><div class="tool-notice"><strong>Shared Firebase plan</strong><span>Approved coaches load and update the same weekly plan. The most recent save becomes the current coaching plan.</span></div></section>
       <section class="tool-form-panel weekly-workout-panel">
         <form id="workout-log-form">
           <div class="week-planner-header">
@@ -21,7 +21,9 @@
           </div>
           <div id="weekly-workout-days" class="weekly-workout-days"></div>
           <div class="weekly-workout-actions">
-            <button class="primary-button" type="submit">Save weekly plan <span>â†’</span></button>
+            <button class="primary-button" type="submit">Save weekly plan <span>→</span></button>
+            <button class="secondary-button" id="copy-previous-workout" type="button">Copy previous week</button>
+            <button class="secondary-button" id="prepopulate-next-workout" type="button">Pre-populate next week</button>
             <button class="secondary-button" id="clear-workout-draft" type="button">Clear this week</button>
           </div>
           <p id="workout-save-status" class="form-status" role="status"></p>

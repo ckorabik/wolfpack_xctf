@@ -6,6 +6,8 @@ const resultGrid = document.querySelector("#pace-result-grid");
 const resultHeading = document.querySelector("#pace-result-heading");
 const resultNote = document.querySelector("#pace-rounding-note");
 const errorElement = document.querySelector("#pace-error");
+const fullTableBody = document.querySelector("#pace-full-table-body");
+const tableHighlightNote = document.querySelector("#pace-table-highlight-note");
 
 const columns = [
   { key: "mile200", label: "Mile pace", detail: "Per 200m", kind: "seconds" },
@@ -63,6 +65,42 @@ function chooseSlowerRow(inputSeconds, distance) {
   return rows.find((row) => benchmarkSeconds(row[key], fallback) >= inputSeconds) || rows.at(-1);
 }
 
+function bracketingRowIndexes(inputSeconds, distance) {
+  const rows = tableRows();
+  const key = distance === "1600" ? "sixteen" : "threeMile";
+  const fallback = distance === "1600" ? 420 : 1440;
+  const slowerIndex = rows.findIndex((row) => benchmarkSeconds(row[key], fallback) >= inputSeconds);
+  const boundedSlowerIndex = slowerIndex === -1 ? rows.length - 1 : slowerIndex;
+
+  if (boundedSlowerIndex === 0) return [0, Math.min(1, rows.length - 1)];
+  return [boundedSlowerIndex - 1, boundedSlowerIndex];
+}
+
+function renderFullTable() {
+  fullTableBody.replaceChildren(...tableRows().map((row, index) => {
+    const tableRow = document.createElement("tr");
+    tableRow.dataset.rowIndex = String(index);
+    [row.threeMile, row.sixteen, row.vdot, row.mile200, row.mile300, row.pace3200, row.pace3mile, row.critical, row.threshold, row.marathon]
+      .forEach((value, columnIndex) => {
+        const cell = document.createElement(columnIndex === 0 ? "th" : "td");
+        if (columnIndex === 0) cell.scope = "row";
+        cell.textContent = value || "—";
+        tableRow.append(cell);
+      });
+    return tableRow;
+  }));
+}
+
+function highlightBracketingRows(enteredSeconds, distance) {
+  const indexes = bracketingRowIndexes(enteredSeconds, distance);
+  const rows = tableRows();
+  fullTableBody.querySelectorAll("tr").forEach((row) => {
+    row.classList.toggle("pace-row-highlight", indexes.includes(Number(row.dataset.rowIndex)));
+  });
+  const labels = indexes.map((index) => distance === "1600" ? rows[index].sixteen : rows[index].threeMile);
+  tableHighlightNote.textContent = `Highlighted fitness range: ${labels[0]} to ${labels[1]} (${distance === "1600" ? "1600 meters" : "3 miles"}).`;
+}
+
 function createResultCard(column, row) {
   const card = document.createElement("article");
   card.className = "pace-result-card";
@@ -106,7 +144,9 @@ paceForm?.addEventListener("submit", (event) => {
     return;
   }
   const distance = selectedDistance();
+  highlightBracketingRows(enteredSeconds, distance);
   renderResult(chooseSlowerRow(enteredSeconds, distance), enteredSeconds, distance);
 });
 
+renderFullTable();
 updateInputCopy();

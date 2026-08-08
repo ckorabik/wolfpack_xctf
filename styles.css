@@ -1718,7 +1718,6 @@ footer span:first-child {
   gap: 0;
 }
 
-.timeline-item.has-image > .timeline-image-slot,
 .timeline-item.has-image > .timeline-photo {
   margin-left: 1.25rem;
 }
@@ -1786,43 +1785,6 @@ footer span:first-child {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-}
-
-.timeline-image-slot {
-  position: relative;
-  display: grid;
-  min-height: 145px;
-  place-content: center;
-  overflow: hidden;
-  border: 1px solid rgb(255 255 255 / 30%);
-  border-radius: 12px;
-  background:
-    linear-gradient(135deg, rgb(101 27 50 / 4%) 25%, transparent 25%) 0 0 / 20px 20px,
-    rgb(255 255 255 / 88%);
-  color: #6f6267;
-  box-shadow: 0 14px 38px rgb(23 0 9 / 18%);
-  text-align: center;
-}
-
-.timeline-image-slot span {
-  position: absolute;
-  top: 0.7rem;
-  left: 0.8rem;
-  color: var(--navy);
-  font-family: "Oswald", sans-serif;
-  font-size: 0.8rem;
-}
-
-.timeline-image-slot strong {
-  color: var(--navy);
-  font-size: 0.8rem;
-}
-
-.timeline-image-slot small {
-  max-width: 165px;
-  margin-top: 0.35rem;
-  font-size: 0.68rem;
-  line-height: 1.4;
 }
 
 .timeline-photo {
@@ -2281,6 +2243,90 @@ footer span:first-child {
   margin: 1.25rem 0 0;
   font-size: 0.72rem;
   text-align: right;
+}
+
+.pace-full-table-section {
+  margin-top: 2.5rem;
+  padding-top: 2.5rem;
+  border-top: 1px solid var(--line);
+}
+
+.pace-full-table-heading {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 1.25rem;
+}
+
+.pace-full-table-heading h2 {
+  font-size: clamp(1.8rem, 4vw, 3rem);
+}
+
+.pace-full-table-heading > p {
+  max-width: 430px;
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+.pace-full-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--line);
+}
+
+.pace-full-table-wrap:focus-visible {
+  outline: 3px solid rgb(215 174 85 / 45%);
+  outline-offset: 3px;
+}
+
+.pace-full-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+
+.pace-full-table th,
+.pace-full-table td {
+  padding: 0.8rem 0.7rem;
+  border-bottom: 1px solid var(--line);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.pace-full-table thead th {
+  background: var(--navy);
+  color: white;
+  font-size: 0.68rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.pace-full-table tbody th {
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.pace-full-table tbody tr:nth-child(even) {
+  background: #faf9f9;
+}
+
+.pace-full-table tbody tr.pace-row-highlight {
+  background: #f5e7b9;
+  box-shadow: inset 5px 0 0 var(--red);
+}
+
+.pace-full-table tbody tr.pace-row-highlight th,
+.pace-full-table tbody tr.pace-row-highlight td {
+  color: var(--navy);
+  font-weight: 800;
+}
+
+.pace-table-highlight-note {
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
 }
 
 .tool-card {
@@ -2900,13 +2946,6 @@ footer span:first-child {
     font-size: 1.05rem;
   }
 
-  .timeline-item.has-image > .timeline-image-slot {
-    grid-column: 3;
-    min-height: 125px;
-    margin-top: 0.75rem;
-    margin-left: 0;
-  }
-
   .timeline-item.has-image > .timeline-photo {
     grid-column: 3;
     margin-top: 0.75rem;
@@ -2949,7 +2988,8 @@ footer span:first-child {
     margin-bottom: 4rem;
   }
 
-  .pace-lookup-heading {
+  .pace-lookup-heading,
+  .pace-full-table-heading {
     align-items: flex-start;
     flex-direction: column;
     gap: 0.75rem;
@@ -3235,21 +3275,6 @@ footer span:first-child {
   min-height: 1.3em;
   margin: 0.4rem 0 0;
   font-size: 0.85rem;
-}
-
-.workout-pace-link {
-  flex: 0 0 auto;
-  padding: 0.8rem 1rem;
-  border: 1px solid var(--maroon);
-  border-radius: 999px;
-  color: var(--maroon);
-  font-weight: 700;
-  text-decoration: none;
-}
-
-.workout-pace-link:hover {
-  background: var(--maroon);
-  color: white;
 }
 
 .athlete-workout-status {

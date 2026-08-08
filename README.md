@@ -10,6 +10,11 @@ Production domain: `https://wolfpack-xctf.com/`
 The spreadsheet is already created in Google Drive:
 [Wolfpack Weekly Mileage](https://docs.google.com/spreadsheets/d/1cL0OWH-aiRr1MuKQYq3Dfm9AqWar37THlSbWoJDgnws/edit).
 
+Attendance and bus responses use their dedicated spreadsheets:
+
+- [Attendance](https://docs.google.com/spreadsheets/d/1NqXh-ZTTKSjP0RnBgNUT_kCvh4PrbVRxxAMSPGPcxPY/edit)
+- [Bus Reservations](https://docs.google.com/spreadsheets/d/1zsWKNcIsKxRdjNmGhGsO_Nx9v3OPcwqJzn8v79Mojb4/edit)
+
 History and Records currently use reviewed static snapshots from the
 `SICP XC History` spreadsheet. See `TODO.md` for the planned coach-triggered
 bulk synchronization workflow.
@@ -33,8 +38,8 @@ bulk synchronization workflow.
 The first successful submission automatically creates a tab called `Mileage Log`
 with the correct column headers.
 
-Bus responses use the same Apps Script deployment and automatically create a
-separate `Bus Reservations` tab.
+Bus responses use the same Apps Script deployment but are written to the
+standalone `Bus Reservations` spreadsheet's `Sheet1` tab.
 
 Important: after changing `Code.gs`, create a new Apps Script deployment version
 for the live form to use the update.

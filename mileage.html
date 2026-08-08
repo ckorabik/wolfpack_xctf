@@ -30,17 +30,17 @@
         <form id="mileage-form" novalidate>
           <div class="field"><label for="athlete-name">Athlete name</label><select id="athlete-name" name="athleteName" required><option value="">Choose your name</option></select><span class="error" data-error-for="athleteName"></span></div>
           <div class="field-row">
-            <div class="field"><label for="week-ending">Training week</label><select id="week-ending" name="weekEnding" required><option value="">Choose a Mondayâ€“Sunday week</option></select><span class="error" data-error-for="weekEnding"></span></div>
+            <div class="field"><label for="week-ending">Training week</label><select id="week-ending" name="weekEnding" required><option value="">Choose a Monday–Sunday week</option></select><span class="error" data-error-for="weekEnding"></span></div>
             <div class="field"><label for="weekly-miles">Total miles</label><div class="input-suffix"><input id="weekly-miles" name="weeklyMiles" type="number" inputmode="decimal" min="0" max="200" step="0.01" placeholder="0.00" required /><span>mi</span></div><span class="error" data-error-for="weeklyMiles"></span></div>
           </div>
           <div class="field"><label for="cross-train-minutes">Cross-training minutes</label><div class="input-suffix"><input id="cross-train-minutes" name="crossTrainMinutes" type="number" inputmode="numeric" min="0" max="3000" step="1" placeholder="0" required /><span>min</span></div><p class="field-help">Elliptical, bike, and swim all count.</p><span class="error" data-error-for="crossTrainMinutes"></span></div>
-          <div class="field"><label for="training-feel">How did training feel?</label><select id="training-feel" name="trainingFeel" required><option value="">Choose one</option><option value="Great">Great â€” strong and energized</option><option value="Good">Good â€” mostly comfortable</option><option value="Okay">Okay â€” some tough days</option><option value="Hard">Hard â€” struggled this week</option><option value="Injured">Injured / unable to train</option></select><span class="error" data-error-for="trainingFeel"></span></div>
+          <div class="field"><label for="training-feel">How did training feel?</label><select id="training-feel" name="trainingFeel" required><option value="">Choose one</option><option value="Great">Great — strong and energized</option><option value="Good">Good — mostly comfortable</option><option value="Okay">Okay — some tough days</option><option value="Hard">Hard — struggled this week</option><option value="Injured">Injured / unable to train</option></select><span class="error" data-error-for="trainingFeel"></span></div>
           <div class="field"><div class="label-line"><label for="notes">Notes for coaches</label><span>Optional</span></div><textarea id="notes" name="notes" rows="4" maxlength="500" placeholder="Share a highlight, concern, injury, or anything else we should know."></textarea></div>
           <div id="form-status" class="status" role="status" aria-live="polite"></div>
-          <button id="submit-button" type="submit"><span>Submit weekly mileage</span><span aria-hidden="true">â†’</span></button>
+          <button id="submit-button" type="submit"><span>Submit weekly mileage</span><span aria-hidden="true">→</span></button>
           <p class="privacy-note">Your submission is visible only to the Wolfpack coaching staff.</p>
         </form>
-        <section id="success-card" class="success-card" hidden><div class="success-icon" aria-hidden="true">âœ“</div><p class="eyebrow">Submitted</p><h2>Week logged.</h2><p>Your training entry has been added to the team sheet.</p><button id="submit-another" class="secondary-button" type="button">Submit another entry</button></section>
+        <section id="success-card" class="success-card" hidden><div class="success-icon" aria-hidden="true">✓</div><p class="eyebrow">Submitted</p><h2>Week logged.</h2><p>Your training entry has been added to the team sheet.</p><button id="submit-another" class="secondary-button" type="button">Submit another entry</button></section>
       </section>
     </main>
   </body>
