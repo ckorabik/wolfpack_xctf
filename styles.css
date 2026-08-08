@@ -108,8 +108,10 @@ blockquote {
   place-items: center;
   border: 2px solid var(--red);
   border-radius: 50%;
-  font-family: "Oswald", sans-serif;
-  color: white;
+  overflow: hidden;
+  background: url("images/wolf.jpg") center / cover no-repeat;
+  color: transparent;
+  font-size: 0;
 }
 
 .brand-logo {

@@ -311,10 +311,25 @@ def update_history(service, spreadsheet_id: str) -> None:
         if not year or not event:
             continue
         classes = "timeline-item milestone" if any(word in event.lower() for word in milestone_words) else "timeline-item"
+        photo = ""
+        if year == "1964":
+            classes += " has-image"
+            photo = (
+                '<figure class="timeline-photo ohara-photo"><img src="images/Ohara-SI.jpg" '
+                'alt="Sports Illustrated illustration of Tom O\'Hara" />'
+                '<figcaption>Tom O\'Hara &middot; 1964</figcaption></figure>'
+            )
+        elif year == "2012":
+            classes += " has-image"
+            photo = (
+                '<figure class="timeline-photo keelan-photo"><img src="images/keelan.jpg" '
+                'alt="Jack Keelan racing at the IHSA State Meet" />'
+                '<figcaption>Jack Keelan &middot; 2012 state champion</figcaption></figure>'
+            )
         output.append(
             f'            <article class="{classes}"><div class="timeline-year">'
             f'{escape(year.replace("-", "–"))}</div><div class="timeline-dot"></div>'
-            f'<div class="timeline-card"><p>{escape(event)}</p></div></article>'
+            f'<div class="timeline-card"><p>{escape(event)}</p></div>{photo}</article>'
         )
     if not output:
         raise RuntimeError("The Team Timeline tab did not contain usable entries.")
