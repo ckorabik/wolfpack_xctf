@@ -303,14 +303,8 @@ async function initializeSiteAuthentication() {
     if (!user) {
       if (headerButton) headerButton.textContent = "Log Out";
       if (rememberedStandardAccess) {
-        if (coachOnly) {
-          document.body.classList.remove("site-auth-pending");
-          authGate?.remove();
-          authGate = createCoachGate();
-          wireGateActions(authGate);
-        } else {
-          revealSite("standard");
-        }
+        forgetStandardAccess();
+        showSiteGate("Your saved team session expired. Enter the standard PIN again to continue.");
         return;
       }
       showSiteGate();
@@ -381,7 +375,12 @@ window.WOLFPACK_AUTH = {
     return data;
   },
   async getLatestWorkoutPlan() {
-    if (!auth.currentUser) throw new Error("Sign in to view the team workout plan.");
+    const user = auth.currentUser;
+    if (!user) throw new Error("Enter the standard PIN to view the team workout plan.");
+    if (user.isAnonymous && !(await hasStandardAccess(user, true))) {
+      throw new Error("Your team session expired. Log out, then enter the standard PIN again.");
+    }
+    if (!user.isAnonymous) await verifyCoach(user);
     const { data } = await getLatestWorkoutPlanCall();
     return data;
   },
